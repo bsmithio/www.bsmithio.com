@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Technology on bsmithio</title><link>https://www.bssmith.net/categories/technology/</link><description>Recent content in Technology on bsmithio</description><generator>Hugo -- gohugo.io</generator><copyright>Copyright © 2008–2018, Steve Francia and the Hugo Authors; all rights reserved.</copyright><lastBuildDate>Wed, 12 Jan 2022 14:48:14 +0000</lastBuildDate><atom:link href="https://www.bssmith.net/categories/technology/index.xml" rel="self" type="application/rss+xml"/><item><title>OPNsense Dashboard</title><link>https://www.bssmith.net/post/opnsense/</link><pubDate>Wed, 12 Jan 2022 14:48:14 +0000</pubDate><guid>https://www.bssmith.net/post/opnsense/</guid><description>
+Want to have an awesome dashboard for your OPNsense firewall?
+Follow along to set one up!
+Docker To simplify everything, we'll use a docker compose file.
+You'll need to have Docker and Docker-Compose installed on the server that will host the dashboard.
+Install Docker
+Install Docker Compose
+1version: &amp;#39;3&amp;#39; 2services: 3 mongodb: 4 container_name: mongodb 5 image: mongo:4.4.10 6 volumes: 7 - mongodb_data:/data/db 8 restart: &amp;#34;unless-stopped&amp;#34; 9 environment: 10 # Change this to your time zone, valid time zones can be found here: https://www.</description></item></channel></rss>
