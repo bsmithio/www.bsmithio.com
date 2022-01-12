@@ -12,14 +12,14 @@
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
 <meta name=twitter:title content="How to Setup an OPNsense Dashboard">
-<meta property="og:url" content="https://www.bssmith.net/post/opnsense/">
+<meta property="og:url" content="https://www.bssmith.net/post/opnsense-dashboard/">
 <meta property="og:title" content="How to Setup an OPNsense Dashboard">
 <meta property="og:description" content="Setup OPNsense Dashboard Grafana Graylog Telegraf InfluxDB Router Firewall">
-<meta property="og:image" content="https://www.bssmith.net/post/opnsense/images/path/share.png">
+<meta property="og:image" content="https://www.bssmith.net/post/opnsense-dashboard/images/path/share.png">
 <link rel=apple-touch-icon sizes=180x180 href=https://www.bssmith.net/icons/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=https://www.bssmith.net/icons/favicon-32x32.png>
 <link rel=manifest href=https://www.bssmith.net/icons/site.webmanifest>
-<link rel=canonical href=https://www.bssmith.net/post/opnsense/>
+<link rel=canonical href=https://www.bssmith.net/post/opnsense-dashboard/>
 <link rel=preload href=https://www.bssmith.net/css/styles.01869c76e4757810d94ecbdccadba853d9d01d9416dfeb113df02e1479ff8b36e284e8bfeb3e8f353f2fdcdcbbdfcf27e558dbda96eb6341bfc304d55cd9e986.css integrity="sha512-AYacduR1eBDZTsvcytuoU9nQHZQW3+sRPfAuFHn/izbihOi/6z6PNT8v3Ny7388n5Vjb2pbrY0G/wwTVXNnphg==" as=style crossorigin=anonymous>
 <link rel=preload href=https://www.bssmith.net/js/bundle.min.061d04727b51b0a8fafe2f15b9370a961f33306e7af52abd00d69c906f5d825f1599306159d7756d7d2b4f359767a170625ae541d1f37d05c1daa4d5c7feec25.js as=script integrity="sha512-Bh0EcntRsKj6/i8VuTcKlh8zMG569Sq9ANackG9dgl8VmTBhWdd1bX0rTzWXZ6FwYlrlQdHzfQXB2qTVx/7sJQ==" crossorigin=anonymous>
 <link rel=stylesheet type=text/css href=https://www.bssmith.net/css/styles.01869c76e4757810d94ecbdccadba853d9d01d9416dfeb113df02e1479ff8b36e284e8bfeb3e8f353f2fdcdcbbdfcf27e558dbda96eb6341bfc304d55cd9e986.css integrity="sha512-AYacduR1eBDZTsvcytuoU9nQHZQW3+sRPfAuFHn/izbihOi/6z6PNT8v3Ny7388n5Vjb2pbrY0G/wwTVXNnphg==" crossorigin=anonymous>
@@ -71,7 +71,7 @@ Jan 12, 2022</span>
 <div class=post_featured>
 <figure>
 <picture>
-<img class="image_featured image_internal" src=https://www.bssmith.net/images/grafana-opnsense.png alt="A Grafana OPNsense dashboard." width=1888 height=2734>
+<img class="image_featured image_internal" src=/post/opnsense-dashboard/grafana-opnsense.png alt="A Grafana OPNsense dashboard." width=1888 height=2734>
 <figcaption>A sweet OPNsense dashboard.</figcaption>
 </picture>
 </figure>
@@ -123,6 +123,10 @@ Jan 12, 2022</span>
 <p>You'll need to have Docker and Docker-Compose installed on the server that will host the dashboard.</p>
 <p><a href=https://docs.docker.com/engine/install/>Install Docker</a></p>
 <p><a href=https://docs.docker.com/compose/install/>Install Docker Compose</a></p>
+<p>After you've installed Docker and Docker Compose, copy this code block to a file named docker-compose.yaml.
+It's important that you change the TZ environment variable to your timezone for everything to work properly.
+I also recommend you change the passwords in this compose file as well.
+After you've made the necessary changes, run <code>docker-compose up -d</code> in the same directory as your docker-compose.yaml.</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln> 1</span>version: &#39;3&#39;
 <span class=ln> 2</span>services:
 <span class=ln> 3</span>  mongodb:
@@ -215,8 +219,7 @@ Jan 12, 2022</span>
 <span class=ln>90</span>  graylog_data:
 <span class=ln>91</span>  es_data:
 <span class=ln>92</span>  mongodb_data:
-</code></pre></div><p>It's important that you change the TZ environment variable to your timezone for everything to work properly.</p>
-<p>Once you have your docker containers running, follow the steps below.</p>
+</code></pre></div><p>Once you have your docker containers running, follow the steps below.</p>
 <h2 id=configuring-influxdb>Configuring InfluxDB</h2>
 <p>After InfluxDB is started, go to http://(ip of docker server):8086, you will need to setup your username, password, bucket and organization here. Once that is done navigate to the Data tab, click on Telegraf, and create a configuration for a system. Name it, and copy your API token, you will need this for your telegraf configuration. I recommend generating another API token for Grafana. Click on API tokens -> Generate API Token -> Read/Write Access -> Click on your bucket under Read -> and Save. Copy this somewhere as well, you'll need it for Grafana.</p>
 <h2 id=configuring-telegraf>Configuring Telegraf</h2>
@@ -246,36 +249,62 @@ Jan 12, 2022</span>
 <h3 id=configure-additional-settings>Configure Additional Settings</h3>
 <p>In a browser navigate to http://(ip of docker server):9000 and login.</p>
 <p>For Graylog, it's recommended to create an index set. To do so, navigate to System -> Indices. Create an index set with the name "OPNsense / filterlog" and set the index prefix to <code>opnsense_filterlog</code>.</p>
-<p>Once that's done, download the <a href=config/OPNsense-pack.json>content pack</a> and install it on Graylog by navigating to System -> Content Packs -> Upload, choose the pack, and then click install.</p>
+<p>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./indexset.png alt="Graylog Index Set" loading=lazy decoding=async width=1264 height=523>
+</picture>
+</figure>
+</p>
+<p>Once that's done, download the <a href=config/OPNsense-pack.json>content pack</a> and install it on Graylog by navigating to System -> Content Packs -> Upload, choose the pack, Upload, then Install.</p>
 <p>Now, add your index set from earlier to the "OPNsense / filterlog" stream. Navigate to Streams -> More Actions -> Edit Stream -> select your index set and save.</p>
+<p>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./streamindex.png alt="Graylog Stream Index Set" loading=lazy decoding=async width=622 height=473>
+</picture>
+</figure>
+</p>
 <p>There's one more step we need to do here, navigate to System -> Configurations -> click on Update under Message Processors, and reorder like so:</p>
-<p>Message Filter Chain</p>
-<p>Pipeline Processor</p>
-<p>AWS Instance Name Lookup</p>
-<p>GeoIP Resolver</p>
+<p>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/processors.png alt="Graylog Message Processors" loading=lazy decoding=async width=943 height=301>
+</picture>
+</figure>
+</p>
 <p>Ensure that all of these are enabled, and click save.</p>
 <h3 id=add-graylog-server-as-syslog-target-on-opnsense>Add Graylog server as syslog target on OPNsense</h3>
 <p>Once that is all done, login to your OPNsense router and navigate to System -> Settings -> Logging / targets. Add a new target with the following options:</p>
-<p>Transport: UDP(4)</p>
-<p>Applications: filter (filterlog)</p>
-<p>Hostname: Hostname or IP address of your graylog server</p>
-<p>Port: 1514</p>
+<p>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./opnsensesyslog.png alt="OPNsense Syslog Target" loading=lazy decoding=async width=937 height=563>
+</picture>
+</figure>
+</p>
 <p>Add a description if you'd like, then click save.</p>
 <h2 id=configuring-grafana>Configuring Grafana</h2>
 <h3 id=add-influxdb-and-elasticsearch-data-sources>Add InfluxDB and ElasticSearch data sources</h3>
 <p>You will need to add the data sources on Grafana. Navigate to http://(ip of docker server):3000, login and click on the cog wheel and Add a Data Source.</p>
 <p>For InfluxDB, make the following configurations</p>
-<p>Query Language: Flux</p>
-<p>URL: http://influxdb:8086</p>
-<p>Organization: Your InfluxDB organization</p>
-<p>Token: Your InfluxDB Grafana token</p>
-<p>Default Bucket: Your bucket</p>
+<p>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./influxdb.png alt="Grafana InfluxDB Configuration" loading=lazy decoding=async width=716 height=975>
+</picture>
+</figure>
+</p>
 <p>For ElasticSearch, make the following configurations</p>
-<p>URL: http://elasticsearch:9200</p>
-<p>Time field name: timestamp</p>
-<p>Version: 7.0+</p>
+<p>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./elasticsearch.png alt="Grafana ElasticSearch Configuration" loading=lazy decoding=async width=742 height=737>
+</picture>
+</figure>
+</p>
 <h3 id=import-dashboard>Import Dashboard</h3>
-<p>To import the dashboard, copy the JSON in <a href=OPNsense-Grafana-Dashboard.json>OPNsense-Grafana-Dashboard.json</a> and navigate to Dashboards -> Import and paste under Import via panel json.</p>
+<p>To import the dashboard, copy the JSON in <a href=OPNsense-Grafana-Dashboard.json>OPNsense-Grafana-Dashboard.json</a> and navigate to Dashboards -> Browse -> Import and paste under Import via panel json.</p>
 <p>Dashboard Settings -> Variables</p>
 <p>WAN - $WAN is a static variable defined so that a separate dashboard panel can be created for WAN interfaces stats.  Use a comma-separated list for multiple WAN interfaces.</p>
 <p>LAN - $LAN uses a regex to remove any interfaces you don't want to be grouped as LAN. The filtering happens in the "Regex" field. I use a negative lookahead regex to match the interfaces I want excluded. It should be pretty easy to understand what you need to do here. I have excluded igb0 (WAN) and igb1,igb2,igb3 (only used to host vlans)..</p>
