@@ -226,15 +226,24 @@ After you've made the necessary changes, run <code>docker-compose up -d</code> i
 <p>You must manually install Telegraf on OPNsense, as the OPNsense Telegraf plugin does not currently support custom telegraf configuration. To do so, SSH into your OPNsense router and use the command</p>
 <p><code>sudo pkg install telegraf</code></p>
 <p>After that, use these commands. The first, enables Telegraf to start on boot, and the second, adds Telegraf to sudoers and restricts nopasswd to only what Telegraf needs to run as root.</p>
-<p><code>printf 'telegraf_enable="YES"' > /etc/rc.conf.d/telegraf</code></p>
-<p><code>printf 'telegraf ALL=(root) NOPASSWD: /sbin/pfctl -s info,/usr/local/bin/telegraf_pfifgw.php' >> /usr/local/etc/sudoers</code></p>
-<p>You will need this <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php>telegraf config</a> file.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>printf &#39;telegraf_enable=&#34;YES&#34;&#39; &gt; /etc/rc.conf.d/telegraf
+<span class=ln>2</span>
+<span class=ln>3</span>printf &#39;telegraf ALL=(root) NOPASSWD: /sbin/pfctl -s info,/usr/local/bin/telegraf_pfifgw.php&#39; &gt;&gt; /usr/local/etc/sudoers
+</code></pre></div><p>You will need this <a href=https://github.com/bsmithio/OPNsense-Dashboard/blob/master/config/telegraf.conf>telegraf config</a> file.</p>
 <p>You must edit this file and type in your InfluxDB URL, InfluxDB Telegraf API token, organization, and bucket under [[outputs.influxdb_v2]].</p>
 <p>You will need to place this config in /usr/local/etc on your OPNsense system.</p>
-<h3 id=telegraf-plugins>Telegraf Plugins</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>cd /usr/local/etc
+<span class=ln>2</span>curl https://github.com/bsmithio/OPNsense-Dashboard/blob/master/config/telegraf.conf
+<span class=ln>3</span># Make the necessary changes with vi, if you wish to edit with nano you&#39;ll need to install nano with pkg install nano
+<span class=ln>4</span>vi telegraf.conf
+</code></pre></div><h3 id=telegraf-plugins>Telegraf Plugins</h3>
 <p><strong>Plugins must be copied to your OPNsense system</strong></p>
 <p>Place <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php>telegraf_pfifgw.php</a> and <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_temperature.sh>telegraf_temperature.sh</a> in /usr/local/bin and chmod them to 755.</p>
-<p>Test these out before starting the telegraf service by executing them</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>cd /usr/local/bin
+<span class=ln>2</span>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php
+<span class=ln>3</span>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_temperature.sh
+<span class=ln>4</span>chmod 755 telegraf_temperature.sh telegraf_pfifgw.php
+</code></pre></div><p>Test these out before starting the telegraf service by executing them</p>
 <p><code>./telegraf_pfifgw.php</code></p>
 <p><code>./telegraf_temperature.sh</code></p>
 <p>The temperature plugin may not work on every system, if you receive <code>sysctl: unknown oid 'hw.acpi.thermal'</code> comment out or remove that line from the plugin.</p>
@@ -245,8 +254,10 @@ After you've made the necessary changes, run <code>docker-compose up -d</code> i
 <p>You'll need to download the GeoIP database file to your Graylog container. Access your Graylog container's shell from your Docker host like so</p>
 <p><code>sudo docker exec -it graylog /bin/bash</code></p>
 <p>Then download the database file, replace <code>YOUR_LICENSE_KEY</code> with the key you generated above.</p>
-<p><code>curl "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=YOUR_LICENSE_KEY&suffix=tar.gz" -o GeoLite2-Country.tar.gz \ && tar -xzvf GeoLite2-Country.tar.gz \ && mv GeoLite2-Country_*/GeoLite2-Country.mmdb /usr/share/graylog/data/data/</code></p>
-<h3 id=configure-additional-settings>Configure Additional Settings</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>curl &#34;https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&amp;license_key=YOUR_LICENSE_KEY&amp;suffix=tar.gz&#34; -o GeoLite2-Country.tar.gz \
+<span class=ln>2</span>&amp;&amp; tar -xzvf GeoLite2-Country.tar.gz \
+<span class=ln>3</span>&amp;&amp; mv GeoLite2-Country_*/GeoLite2-Country.mmdb /usr/share/graylog/data/data/
+</code></pre></div><h3 id=configure-additional-settings>Configure Additional Settings</h3>
 <p>In a browser navigate to http://(ip of docker server):9000 and login.</p>
 <p>For Graylog, it's recommended to create an index set. To do so, navigate to System -> Indices. Create an index set with the name "OPNsense / filterlog" and set the index prefix to <code>opnsense_filterlog</code>.</p>
 <p>
