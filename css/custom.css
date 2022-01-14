@@ -1,1 +1,6 @@
-
+code.noClass {
+    border-radius: 0.5rem;
+    display: inline;
+    padding: 0.3rem 0.3rem;
+    background: rgb(255 255 255 / 9%) !important;
+}
