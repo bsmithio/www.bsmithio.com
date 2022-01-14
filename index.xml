@@ -1,8 +1,2 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>bsmithio</title><link>https://www.bsmithio.com/</link><description>Recent content on bsmithio</description><generator>Hugo -- gohugo.io</generator><copyright>Copyright © 2022, Brendan Smith; all rights reserved.</copyright><lastBuildDate>Wed, 12 Jan 2022 14:48:14 +0000</lastBuildDate><atom:link href="https://www.bsmithio.com/index.xml" rel="self" type="application/rss+xml"/><item><title>How to Setup an OPNsense Dashboard</title><link>https://www.bsmithio.com/post/opnsense-dashboard/</link><pubDate>Wed, 12 Jan 2022 14:48:14 +0000</pubDate><guid>https://www.bsmithio.com/post/opnsense-dashboard/</guid><description>
-Want to have an awesome dashboard for your OPNsense firewall?
-Follow along to set one up!
-Docker To simplify everything, we'll use a docker compose file.
-You'll need to have Docker and Docker-Compose installed on the server that will host the dashboard.
-Install Docker
-Install Docker Compose
-After you've installed Docker and Docker Compose, copy this code block to a file named docker-compose.yaml. It's important that you change the TZ environment variable to your timezone for everything to work properly.</description></item></channel></rss>
+In this guide I will show you how to configure a Grafana dashboard for OPNsense.</description></item></channel></rss>
