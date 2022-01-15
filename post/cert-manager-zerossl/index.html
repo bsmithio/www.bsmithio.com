@@ -1,6 +1,6 @@
 <!doctype html><html lang=en data-figures=true class=page data-mode=dim>
 <head>
-<title>How to Set Up ZeroSSL Certificates with cert-manager on Kubernetes | bsmithio</title>
+<title>How to Set Up Cert-Manager with ZeroSSL on Kubernetes | bsmithio</title>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta http-equiv=x-ua-compatible content="IE=edge">
@@ -11,9 +11,9 @@
 <meta name=description content="How to set up cert-manager on Kubernetes K8s cert-manager kubernetes docker zerossl">
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
-<meta name=twitter:title content="How to Set Up ZeroSSL Certificates with cert-manager on Kubernetes">
+<meta name=twitter:title content="How to Set Up Cert-Manager with ZeroSSL on Kubernetes">
 <meta property="og:url" content="/post/cert-manager-zerossl/">
-<meta property="og:title" content="How to Set Up ZeroSSL Certificates with cert-manager on Kubernetes">
+<meta property="og:title" content="How to Set Up Cert-Manager with ZeroSSL on Kubernetes">
 <meta property="og:description" content="How to set up cert-manager on Kubernetes K8s cert-manager kubernetes docker zerossl">
 <meta property="og:image" content="/post/cert-manager-zerossl/k8s.png">
 <link rel=apple-touch-icon sizes=180x180 href=/icons/apple-touch-icon.png>
@@ -59,12 +59,12 @@
 <main>
 <div class="grid-inverse wrap content">
 <article class=post_content>
-<h1 class=post_title>How to Set Up ZeroSSL Certificates with cert-manager on Kubernetes</h1>
+<h1 class=post_title>How to Set Up Cert-Manager with ZeroSSL on Kubernetes</h1>
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jan 14, 2022</span>
-<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=/tags/kubernetes title=Kubernetes class="post_tag button button_translucent">Kubernetes
+<span class=post_time> · 3 min read</span><span>&nbsp;· <a href=/tags/kubernetes title=Kubernetes class="post_tag button button_translucent">Kubernetes
 </a>
 </span>
 </div>
@@ -72,155 +72,196 @@ Jan 14, 2022</span>
 <h2>Overview</h2>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#create-a-zerossl-account>Create a ZeroSSL Account</a></li>
-<li><a href=#create-yaml-templates>Create YAML Templates</a>
+<li><a href=#cert-manager>Cert-Manager</a>
 <ul>
-<li><a href=#secret>Secret</a></li>
-<li><a href=#clusterissuer>ClusterIssuer</a></li>
-<li><a href=#dns01-provider>DNS01 Provider</a></li>
+<li><a href=#install-helm>Install Helm</a></li>
+<li><a href=#install-cert-manager>Install Cert-Manager</a></li>
 </ul>
 </li>
+<li><a href=#zerossl>ZeroSSL</a>
+<ul>
+<li><a href=#create-a-zerossl-account>Create a ZeroSSL Account</a></li>
+<li><a href=#create-yaml-templates>Create YAML Templates</a></li>
+<li><a href=#clusterissuer>ClusterIssuer</a></li>
+<li><a href=#dns01-provider>DNS01 Provider</a></li>
 <li><a href=#apply-yaml-template>Apply YAML Template</a></li>
 <li><a href=#setup-ingress-to-use-the-clusterissuer>Setup Ingress to Use the ClusterIssuer</a></li>
-<li><a href=#troubleshooting>Troubleshooting</a>
-<ul>
-<li><a href=#check-clusterissuer>Check ClusterIssuer</a></li>
-<li><a href=#check-certificaterequest>Check CertificateRequest</a></li>
+<li><a href=#troubleshooting>Troubleshooting</a></li>
 </ul>
 </li>
 </ul>
 </nav>
 </div>
-<div class=post_body><p>Follow along to set up a ZeroSSL ClusterIssuer, this guide assumes you've already installed cert-manager on your cluster. I recommend installing it via Helm, follow this guide to do so: <a href=https://cert-manager.io/docs/installation/helm/>Helm | cert-manager</a>.</p>
-<p>As of today, ZeroSSL offers unlimited 90 day SSL certificates! This is perfect for someone that needs many SSL certificates. There's also no rate limit for ZeroSSL compared to LetsEncrypt.</p>
-<h2 id=create-a-zerossl-account>Create a ZeroSSL Account</h2>
+<div class=post_body><h1 id=follow-along-to-set-up-cert-manager-with-zerossl-on-your-kubernetes-cluster>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+Cert-manager allows us to automate certificate management and issuance on our Kubernetes clusters.
+Follow along to set up Cert-Manager with ZeroSSL on your Kubernetes cluster!</h1>
+<p>Follow along to set up a ZeroSSL ClusterIssuer, this guide assumes you've already installed cert-manager on your cluster. I recommend installing it via Helm, follow this guide to do so: <a href=https://cert-manager.io/docs/installation/helm/>Helm | cert-manager</a>.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>3a60b063a5f29c0a9e6bebb2b73d1f489ae89970</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id=cert-manager>Cert-Manager</h2>
+<p>To install cert-manager on your cluster, I recommend using Helm. Install Helm by running:</p>
+<h3 id=install-helm>Install Helm</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>curl https://baltocdn.com/helm/signing.asc <span class=p>|</span> sudo apt-key add -
+<span class=ln>2</span>sudo apt-get install apt-transport-https --yes
+<span class=ln>3</span><span class=nb>echo</span> <span class=s2>&#34;deb https://baltocdn.com/helm/stable/debian/ all main&#34;</span> <span class=p>|</span> sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+<span class=ln>4</span>sudo apt-get update
+<span class=ln>5</span>sudo apt-get install helm
+</code></pre></div><h3 id=install-cert-manager>Install Cert-Manager</h3>
+<p>Now install cert-manager:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>helm repo add jetstack https://charts.jetstack.io
+<span class=ln>2</span>
+<span class=ln>3</span>helm repo update
+</code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>helm install <span class=se>\
+</span><span class=ln>2</span><span class=se></span>  cert-manager jetstack/cert-manager <span class=se>\
+</span><span class=ln>3</span><span class=se></span>  --namespace cert-manager <span class=se>\
+</span><span class=ln>4</span><span class=se></span>  --create-namespace <span class=se>\
+</span><span class=ln>5</span><span class=se></span>  --version v1.6.1 <span class=se>\
+</span><span class=ln>6</span><span class=se></span>  --set <span class=nv>installCRDs</span><span class=o>=</span><span class=nb>true</span>
+</code></pre></div><p>Verify cert-manager pods are running:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl get pod -n cert-manager
+</code></pre></div><h2 id=zerossl>ZeroSSL</h2>
+<p>ZeroSSL offers unlimited 90 day SSL certificates, this is perfect for someone that needs many SSL certificates. There's also no rate limit for ZeroSSL compared to LetsEncrypt!</p>
+<h3 id=create-a-zerossl-account>Create a ZeroSSL Account</h3>
 <p>Before we get started, you'll need a ZeroSSL account <a href=https://app.zerossl.com/signup>Sign Up - ZeroSSL</a>.</p>
 <p>After you've created your account, on your <a href=https://app.zerossl.com/dashboard>ZeroSSL dashboard</a>, navigate to the Developer tab and generate your EAB credentials.</p>
-<h2 id=create-yaml-templates>Create YAML Templates</h2>
+<h3 id=create-yaml-templates>Create YAML Templates</h3>
 <p>Now that you have your credentials you'll want to create a secret on your kubernetes cluster.</p>
-<h3 id=secret>Secret</h3>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>apiVersion: v1
-<span class=ln>2</span>kind: Secret
-<span class=ln>3</span>metadata:
-<span class=ln>4</span>  namespace: cert-manager # Must be the namespace cert-manager is installed in
-<span class=ln>5</span>  name: zerossl-eab
-<span class=ln>6</span>stringData:
-<span class=ln>7</span>  secret: &lt;YOUR-HMAC-KEY-HERE&gt;
-</code></pre></div><h3 id=clusterissuer>ClusterIssuer</h3>
+<h4 id=secret>Secret</h4>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=ln>1</span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span><span class=ln>2</span><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Secret</span><span class=w>
+</span><span class=ln>3</span><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span><span class=ln>4</span><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>cert-manager</span><span class=w> </span><span class=c># Must be the namespace cert-manager is installed in</span><span class=w>
+</span><span class=ln>5</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-eab</span><span class=w>
+</span><span class=ln>6</span><span class=w></span><span class=nt>stringData</span><span class=p>:</span><span class=w>
+</span><span class=ln>7</span><span class=w>  </span><span class=nt>secret</span><span class=p>:</span><span class=w> </span><span class=l>&lt;YOUR-HMAC-KEY-HERE&gt;</span><span class=w>
+</span></code></pre></div><h3 id=clusterissuer>ClusterIssuer</h3>
 <p>We'll also need to create a ClusterIssuer that will use these credentials to generate our certificates.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln> 1</span>apiVersion: cert-manager.io/v1
-<span class=ln> 2</span>kind: ClusterIssuer
-<span class=ln> 3</span>metadata:
-<span class=ln> 4</span>  name: zerossl-prod
-<span class=ln> 5</span>spec:
-<span class=ln> 6</span>  acme:
-<span class=ln> 7</span>    # The ACME server URL
-<span class=ln> 8</span>    server: https://acme.zerossl.com/v2/DV90
-<span class=ln> 9</span>    externalAccountBinding:
-<span class=ln>10</span>      keyID: &lt;YOUR-EAB-KID&gt;
-<span class=ln>11</span>      keySecretRef:
-<span class=ln>12</span>        name: zerossl-eab
-<span class=ln>13</span>        key: secret
-<span class=ln>14</span>    # Name of a secret used to store the ACME account private key
-<span class=ln>15</span>    privateKeySecretRef:
-<span class=ln>16</span>      name: zerossl-prod
-<span class=ln>17</span>       # Enable the HTTP-01 challenge provider
-<span class=ln>18</span>    solvers:
-<span class=ln>19</span>    - dns01:
-<span class=ln>20</span>        # Replace the section below with your DNS01 provider
-<span class=ln>21</span>        cloudflare:
-<span class=ln>22</span>          email: &lt;YOUR-CF-EMAIL&gt;
-<span class=ln>23</span>          apiTokenSecretRef:
-<span class=ln>24</span>            name: cloudflare-api-token
-<span class=ln>25</span>            key: api-token
-</code></pre></div><h3 id=dns01-provider>DNS01 Provider</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=ln> 1</span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>cert-manager.io/v1</span><span class=w>
+</span><span class=ln> 2</span><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ClusterIssuer</span><span class=w>
+</span><span class=ln> 3</span><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-prod</span><span class=w>
+</span><span class=ln> 5</span><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span><span class=ln> 6</span><span class=w>  </span><span class=nt>acme</span><span class=p>:</span><span class=w>
+</span><span class=ln> 7</span><span class=w>    </span><span class=c># The ACME server URL</span><span class=w>
+</span><span class=ln> 8</span><span class=w>    </span><span class=nt>server</span><span class=p>:</span><span class=w> </span><span class=l>https://acme.zerossl.com/v2/DV90</span><span class=w>
+</span><span class=ln> 9</span><span class=w>    </span><span class=nt>externalAccountBinding</span><span class=p>:</span><span class=w>
+</span><span class=ln>10</span><span class=w>      </span><span class=nt>keyID</span><span class=p>:</span><span class=w> </span><span class=l>&lt;YOUR-EAB-KID&gt;</span><span class=w>
+</span><span class=ln>11</span><span class=w>      </span><span class=nt>keySecretRef</span><span class=p>:</span><span class=w>
+</span><span class=ln>12</span><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-eab</span><span class=w>
+</span><span class=ln>13</span><span class=w>        </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>secret</span><span class=w>
+</span><span class=ln>14</span><span class=w>    </span><span class=c># Name of a secret used to store the ACME account private key</span><span class=w>
+</span><span class=ln>15</span><span class=w>    </span><span class=nt>privateKeySecretRef</span><span class=p>:</span><span class=w>
+</span><span class=ln>16</span><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-prod</span><span class=w>
+</span><span class=ln>17</span><span class=w>       </span><span class=c># Enable the HTTP-01 challenge provider</span><span class=w>
+</span><span class=ln>18</span><span class=w>    </span><span class=nt>solvers</span><span class=p>:</span><span class=w>
+</span><span class=ln>19</span><span class=w>    </span>- <span class=nt>dns01</span><span class=p>:</span><span class=w>
+</span><span class=ln>20</span><span class=w>        </span><span class=c># Replace the section below with your DNS01 provider</span><span class=w>
+</span><span class=ln>21</span><span class=w>        </span><span class=nt>cloudflare</span><span class=p>:</span><span class=w>
+</span><span class=ln>22</span><span class=w>          </span><span class=nt>email</span><span class=p>:</span><span class=w> </span><span class=l>&lt;YOUR-CF-EMAIL&gt;</span><span class=w>
+</span><span class=ln>23</span><span class=w>          </span><span class=nt>apiTokenSecretRef</span><span class=p>:</span><span class=w>
+</span><span class=ln>24</span><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cloudflare-api-token</span><span class=w>
+</span><span class=ln>25</span><span class=w>            </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>api-token</span><span class=w>
+</span></code></pre></div><h3 id=dns01-provider>DNS01 Provider</h3>
 <p>In my case, I'm using the DNS01 challenge for verification of my domain, and allowing the ClusterIssuer to add DNS entries to my domain that's managed via CloudFlare. You can learn how to add your DNS01 provider here <a href=https://cert-manager.io/docs/configuration/acme/dns01/>DNS01 | cert-manager</a>.</p>
-<h2 id=apply-yaml-template>Apply YAML Template</h2>
+<h3 id=apply-yaml-template>Apply YAML Template</h3>
 <p>Now let's put this all together into one file that we can apply to our cluster.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln> 1</span>apiVersion: v1
-<span class=ln> 2</span>kind: Secret
-<span class=ln> 3</span>metadata:
-<span class=ln> 4</span>  namespace: cert-manager # Must be the namespace cert-manager is installed in
-<span class=ln> 5</span>  name: zerossl-eab
-<span class=ln> 6</span>stringData:
-<span class=ln> 7</span>  secret: &lt;YOUR-HMAC-KEY-HERE&gt;
-<span class=ln> 8</span>---
-<span class=ln> 9</span>apiVersion: cert-manager.io/v1
-<span class=ln>10</span>kind: ClusterIssuer
-<span class=ln>11</span>metadata:
-<span class=ln>12</span>  name: zerossl-prod
-<span class=ln>13</span>spec:
-<span class=ln>14</span>  acme:
-<span class=ln>15</span>    # The ACME server URL
-<span class=ln>16</span>    server: https://acme.zerossl.com/v2/DV90
-<span class=ln>17</span>    externalAccountBinding:
-<span class=ln>18</span>      keyID: &lt;YOUR-EAB-KID&gt;
-<span class=ln>19</span>      keySecretRef:
-<span class=ln>20</span>        name: zerossl-eab
-<span class=ln>21</span>        key: secret
-<span class=ln>22</span>    # Name of a secret used to store the ACME account private key
-<span class=ln>23</span>    privateKeySecretRef:
-<span class=ln>24</span>      name: zerossl-prod
-<span class=ln>25</span>       # Enable the HTTP-01 challenge provider
-<span class=ln>26</span>    solvers:
-<span class=ln>27</span>    - dns01:
-<span class=ln>28</span>        # Replace the section below with your DNS01 provider
-<span class=ln>29</span>        cloudflare:
-<span class=ln>30</span>          email: &lt;YOUR-CF-EMAIL&gt;
-<span class=ln>31</span>          apiTokenSecretRef:
-<span class=ln>32</span>            name: cloudflare-api-token
-<span class=ln>33</span>            key: api-token
-</code></pre></div><p>Save this into a file e.g zerossl.yaml, then apply with <code>kubectl apply -f zerossl.yaml</code>.</p>
-<h2 id=setup-ingress-to-use-the-clusterissuer>Setup Ingress to Use the ClusterIssuer</h2>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=ln> 1</span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span><span class=ln> 2</span><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Secret</span><span class=w>
+</span><span class=ln> 3</span><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>cert-manager</span><span class=w> </span><span class=c># Must be the namespace cert-manager is installed in</span><span class=w>
+</span><span class=ln> 5</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-eab</span><span class=w>
+</span><span class=ln> 6</span><span class=w></span><span class=nt>stringData</span><span class=p>:</span><span class=w>
+</span><span class=ln> 7</span><span class=w>  </span><span class=nt>secret</span><span class=p>:</span><span class=w> </span><span class=l>&lt;YOUR-HMAC-KEY-HERE&gt;</span><span class=w>
+</span><span class=ln> 8</span><span class=w></span><span class=nn>---</span><span class=w>
+</span><span class=ln> 9</span><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>cert-manager.io/v1</span><span class=w>
+</span><span class=ln>10</span><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>ClusterIssuer</span><span class=w>
+</span><span class=ln>11</span><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span><span class=ln>12</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-prod</span><span class=w>
+</span><span class=ln>13</span><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span><span class=ln>14</span><span class=w>  </span><span class=nt>acme</span><span class=p>:</span><span class=w>
+</span><span class=ln>15</span><span class=w>    </span><span class=c># The ACME server URL</span><span class=w>
+</span><span class=ln>16</span><span class=w>    </span><span class=nt>server</span><span class=p>:</span><span class=w> </span><span class=l>https://acme.zerossl.com/v2/DV90</span><span class=w>
+</span><span class=ln>17</span><span class=w>    </span><span class=nt>externalAccountBinding</span><span class=p>:</span><span class=w>
+</span><span class=ln>18</span><span class=w>      </span><span class=nt>keyID</span><span class=p>:</span><span class=w> </span><span class=l>&lt;YOUR-EAB-KID&gt;</span><span class=w>
+</span><span class=ln>19</span><span class=w>      </span><span class=nt>keySecretRef</span><span class=p>:</span><span class=w>
+</span><span class=ln>20</span><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-eab</span><span class=w>
+</span><span class=ln>21</span><span class=w>        </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>secret</span><span class=w>
+</span><span class=ln>22</span><span class=w>    </span><span class=c># Name of a secret used to store the ACME account private key</span><span class=w>
+</span><span class=ln>23</span><span class=w>    </span><span class=nt>privateKeySecretRef</span><span class=p>:</span><span class=w>
+</span><span class=ln>24</span><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-prod</span><span class=w>
+</span><span class=ln>25</span><span class=w>       </span><span class=c># Enable the HTTP-01 challenge provider</span><span class=w>
+</span><span class=ln>26</span><span class=w>    </span><span class=nt>solvers</span><span class=p>:</span><span class=w>
+</span><span class=ln>27</span><span class=w>    </span>- <span class=nt>dns01</span><span class=p>:</span><span class=w>
+</span><span class=ln>28</span><span class=w>        </span><span class=c># Replace the section below with your DNS01 provider</span><span class=w>
+</span><span class=ln>29</span><span class=w>        </span><span class=nt>cloudflare</span><span class=p>:</span><span class=w>
+</span><span class=ln>30</span><span class=w>          </span><span class=nt>email</span><span class=p>:</span><span class=w> </span><span class=l>&lt;YOUR-CF-EMAIL&gt;</span><span class=w>
+</span><span class=ln>31</span><span class=w>          </span><span class=nt>apiTokenSecretRef</span><span class=p>:</span><span class=w>
+</span><span class=ln>32</span><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>cloudflare-api-token</span><span class=w>
+</span><span class=ln>33</span><span class=w>            </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>api-token</span><span class=w>
+</span></code></pre></div><p>Save this into a file e.g zerossl.yaml, then apply with <code>kubectl apply -f zerossl.yaml</code>.</p>
+<h3 id=setup-ingress-to-use-the-clusterissuer>Setup Ingress to Use the ClusterIssuer</h3>
 <p>Now all you'll need to do is add the following line to your Ingress configuration under annotations.</p>
 <p><code>cert-manager.io/cluster-issuer: "zerossl-prod"</code></p>
 <p>For example</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln> 1</span>apiVersion: networking.k8s.io/v1
-<span class=ln> 2</span>kind: Ingress
-<span class=ln> 3</span>metadata:
-<span class=ln> 4</span>  name: example
-<span class=ln> 5</span>  namespace: example
-<span class=ln> 6</span>  annotations:
-<span class=ln> 7</span>    cert-manager.io/cluster-issuer: &#34;zerossl-prod&#34;
-<span class=ln> 8</span>
-<span class=ln> 9</span>spec:
-<span class=ln>10</span>  ingressClassName: nginx
-<span class=ln>11</span>  tls:
-<span class=ln>12</span>  - hosts:
-<span class=ln>13</span>    - www.example.com
-<span class=ln>14</span>    secretName: www-example-tls
-<span class=ln>15</span>  rules:
-<span class=ln>16</span>  - host: www.example.com
-<span class=ln>17</span>    http:
-<span class=ln>18</span>      paths:
-<span class=ln>19</span>      - path: /
-<span class=ln>20</span>        pathType: Prefix
-<span class=ln>21</span>        backend:
-<span class=ln>22</span>          service:
-<span class=ln>23</span>            name: nginx
-<span class=ln>24</span>            port:
-<span class=ln>25</span>              number: 80
-</code></pre></div><p>After applying your Ingress configuration the ClusterIssuer will request a certificate from ZeroSSL for <a href=http://www.example.com>www.example.com</a> and place it in the secret www-example-tls.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=ln> 1</span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.k8s.io/v1</span><span class=w>
+</span><span class=ln> 2</span><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Ingress</span><span class=w>
+</span><span class=ln> 3</span><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>example</span><span class=w>
+</span><span class=ln> 5</span><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>example</span><span class=w>
+</span><span class=ln> 6</span><span class=w>  </span><span class=nt>annotations</span><span class=p>:</span><span class=w>
+</span><span class=ln> 7</span><span class=w>    </span><span class=nt>cert-manager.io/cluster-issuer</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;zerossl-prod&#34;</span><span class=w>
+</span><span class=ln> 8</span><span class=w>
+</span><span class=ln> 9</span><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span><span class=ln>10</span><span class=w>  </span><span class=nt>ingressClassName</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span><span class=ln>11</span><span class=w>  </span><span class=nt>tls</span><span class=p>:</span><span class=w>
+</span><span class=ln>12</span><span class=w>  </span>- <span class=nt>hosts</span><span class=p>:</span><span class=w>
+</span><span class=ln>13</span><span class=w>    </span>- <span class=l>www.example.com</span><span class=w>
+</span><span class=ln>14</span><span class=w>    </span><span class=nt>secretName</span><span class=p>:</span><span class=w> </span><span class=l>www-example-tls</span><span class=w>
+</span><span class=ln>15</span><span class=w>  </span><span class=nt>rules</span><span class=p>:</span><span class=w>
+</span><span class=ln>16</span><span class=w>  </span>- <span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>www.example.com</span><span class=w>
+</span><span class=ln>17</span><span class=w>    </span><span class=nt>http</span><span class=p>:</span><span class=w>
+</span><span class=ln>18</span><span class=w>      </span><span class=nt>paths</span><span class=p>:</span><span class=w>
+</span><span class=ln>19</span><span class=w>      </span>- <span class=nt>path</span><span class=p>:</span><span class=w> </span><span class=l>/</span><span class=w>
+</span><span class=ln>20</span><span class=w>        </span><span class=nt>pathType</span><span class=p>:</span><span class=w> </span><span class=l>Prefix</span><span class=w>
+</span><span class=ln>21</span><span class=w>        </span><span class=nt>backend</span><span class=p>:</span><span class=w>
+</span><span class=ln>22</span><span class=w>          </span><span class=nt>service</span><span class=p>:</span><span class=w>
+</span><span class=ln>23</span><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span><span class=ln>24</span><span class=w>            </span><span class=nt>port</span><span class=p>:</span><span class=w>
+</span><span class=ln>25</span><span class=w>              </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></code></pre></div><p>After applying your Ingress configuration the ClusterIssuer will request a certificate from ZeroSSL for <a href=http://www.example.com>www.example.com</a> and place it in the secret www-example-tls.</p>
 <p>And that's all! You've now configured cert-manager to use ZeroSSL!</p>
-<h2 id=troubleshooting>Troubleshooting</h2>
+<h3 id=troubleshooting>Troubleshooting</h3>
 <p>If anything goes wrong you can troubleshoot issues in a few ways.</p>
-<h3 id=check-clusterissuer>Check ClusterIssuer</h3>
-<p>To see if the ClusterIssuer was successfully registered run
-<code>kubectl describe clusterissuer zerossl-prod</code>
-if everything went smoothly you should see something like this</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>Conditions:
-<span class=ln>2</span>   Last Transition Time:  2022-01-14T22:40:39Z
-<span class=ln>3</span>   Message:               The ACME account was registered with the ACME server
-<span class=ln>4</span>   Observed Generation:   1
-<span class=ln>5</span>   Reason:                ACMEAccountRegistered
-<span class=ln>6</span>   Status:                True
-<span class=ln>7</span>   Type:                  Ready
-</code></pre></div><h3 id=check-certificaterequest>Check CertificateRequest</h3>
+<h4 id=check-clusterissuer>Check ClusterIssuer</h4>
+<p>To see if the ClusterIssuer was successfully registered run</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl describe clusterissuer zerossl-prod
+</code></pre></div><p>if everything went smoothly you should see something like this</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span> Conditions:
+<span class=ln>2</span>    Last Transition Time:  2022-01-14T22:40:39Z
+<span class=ln>3</span>    Message:               The ACME account was registered with the ACME server
+<span class=ln>4</span>    Observed Generation:   1
+<span class=ln>5</span>    Reason:                ACMEAccountRegistered
+<span class=ln>6</span>    Status:                True
+<span class=ln>7</span>    Type:                  Ready
+</code></pre></div><h4 id=check-certificaterequest>Check CertificateRequest</h4>
 <p>To check the status of the certificate request first find the name of the request</p>
-<p><code>kubectl get certificaterequest -n &lt;your-ingress-namespace></code></p>
-<p>then</p>
-<p><code>kubectl describe certificaterequest &lt;name-of-certificate-request> -n &lt;your-ingress-namespace></code></p>
-<p>if everything went smoothly you should see something like this</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl get certificaterequest -n &lt;your-ingress-namespace&gt;<span class=sb>`</span>
+</code></pre></div><p>then</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl describe certificaterequest &lt;name-of-certificate-request&gt; -n &lt;your-ingress-namespace<span class=sb>`</span>
+</code></pre></div><p>if everything went smoothly you should see something like this</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln> 1</span>Conditions:
 <span class=ln> 2</span>    Last Transition Time:  2022-01-13T15:05:28Z
 <span class=ln> 3</span>    Message:               Certificate request has been approved by cert-manager.io
@@ -246,6 +287,9 @@ Technologist, tinkerer, perpetual student.
 <h2 class=mt-4>Recent Posts</h2>
 <ul class=flex-column>
 <li>
+<a href=/post/baremetal-k8s/ class=nav-link title="How to Set Up a Bare Metal Kubernetes Cluster with MetalLB">How to Set Up a Bare Metal Kubernetes Cluster with MetalLB</a>
+</li>
+<li>
 <a href=/post/opnsense-dashboard/ class=nav-link title="How to Setup an OPNsense Dashboard">How to Setup an OPNsense Dashboard</a>
 </li>
 </ul>
@@ -254,7 +298,7 @@ Technologist, tinkerer, perpetual student.
 <nav class=tags_nav>
 <a href=/categories/technology/ class="post_tag button button_translucent" title=technology>
 TECHNOLOGY
-<span class=button_tally>2</span>
+<span class=button_tally>3</span>
 </a>
 </nav>
 </div>
@@ -263,7 +307,7 @@ TECHNOLOGY
 <nav class=tags_nav>
 <a href=/tags/kubernetes/ class="post_tag button button_translucent" title=kubernetes>
 KUBERNETES
-<span class=button_tally>1</span>
+<span class=button_tally>2</span>
 </a>
 <a href=/tags/opnsense/ class="post_tag button button_translucent" title=opnsense>
 OPNSENSE

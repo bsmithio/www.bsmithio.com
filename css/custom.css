@@ -1,7 +1,17 @@
 code.noClass {
     border-radius: 0.5rem;
     display: inline;
-    padding: 0.3rem 0.3rem;
-    background: rgb(255 255 255 / 9%) !important;
+    padding: 0.4rem 0.4rem;
+    background: var(--translucent-light) !important;
     color: var(--text);
+}
+
+.highlight pre {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+}
+
+.html {
+    --translucent-light:  rgba(255,255,255,0.10);
+    
 }
