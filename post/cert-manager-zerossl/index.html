@@ -149,7 +149,7 @@ Follow along to set up Cert-Manager with ZeroSSL on your Kubernetes cluster!</p>
 </span><span class=ln>14</span><span class=w>    </span><span class=c># Name of a secret used to store the ACME account private key</span><span class=w>
 </span><span class=ln>15</span><span class=w>    </span><span class=nt>privateKeySecretRef</span><span class=p>:</span><span class=w>
 </span><span class=ln>16</span><span class=w>      </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>zerossl-prod</span><span class=w>
-</span><span class=ln>17</span><span class=w>       </span><span class=c># Enable the HTTP-01 challenge provider</span><span class=w>
+</span><span class=ln>17</span><span class=w>       </span><span class=c># Enable the DNS-01 challenge provider</span><span class=w>
 </span><span class=ln>18</span><span class=w>    </span><span class=nt>solvers</span><span class=p>:</span><span class=w>
 </span><span class=ln>19</span><span class=w>    </span>- <span class=nt>dns01</span><span class=p>:</span><span class=w>
 </span><span class=ln>20</span><span class=w>        </span><span class=c># Replace the section below with your DNS01 provider</span><span class=w>
