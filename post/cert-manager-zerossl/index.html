@@ -64,7 +64,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jan 14, 2022</span>
-<span class=post_time> · 3 min read</span><span>&nbsp;· <a href=/tags/kubernetes title=Kubernetes class="post_tag button button_translucent">Kubernetes
+<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=/tags/kubernetes title=Kubernetes class="post_tag button button_translucent">Kubernetes
 </a>
 </span>
 </div>
@@ -199,7 +199,7 @@ Follow along to set up Cert-Manager with ZeroSSL on your Kubernetes cluster!</p>
 <h3 id=setup-ingress-to-use-the-clusterissuer>Setup Ingress to Use the ClusterIssuer</h3>
 <p>Now all you'll need to do is add the following line to your Ingress configuration under annotations.</p>
 <p><code>cert-manager.io/cluster-issuer: "zerossl-prod"</code></p>
-<p>For example</p>
+<p>As an example</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=ln> 1</span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.k8s.io/v1</span><span class=w>
 </span><span class=ln> 2</span><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Ingress</span><span class=w>
 </span><span class=ln> 3</span><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
@@ -212,21 +212,21 @@ Follow along to set up Cert-Manager with ZeroSSL on your Kubernetes cluster!</p>
 </span><span class=ln>10</span><span class=w>  </span><span class=nt>ingressClassName</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
 </span><span class=ln>11</span><span class=w>  </span><span class=nt>tls</span><span class=p>:</span><span class=w>
 </span><span class=ln>12</span><span class=w>  </span>- <span class=nt>hosts</span><span class=p>:</span><span class=w>
-</span><span class=ln>13</span><span class=w>    </span>- <span class=l>www.example.com</span><span class=w>
+</span><span class=ln>13</span><span class=w>    </span>- <span class=l>www.example.com</span><span class=w> </span><span class=c># replace with your fqdn</span><span class=w>
 </span><span class=ln>14</span><span class=w>    </span><span class=nt>secretName</span><span class=p>:</span><span class=w> </span><span class=l>www-example-tls</span><span class=w>
 </span><span class=ln>15</span><span class=w>  </span><span class=nt>rules</span><span class=p>:</span><span class=w>
-</span><span class=ln>16</span><span class=w>  </span>- <span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>www.example.com</span><span class=w>
+</span><span class=ln>16</span><span class=w>  </span>- <span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>www.example.com</span><span class=w> </span><span class=c># replace with your fqdn</span><span class=w>
 </span><span class=ln>17</span><span class=w>    </span><span class=nt>http</span><span class=p>:</span><span class=w>
 </span><span class=ln>18</span><span class=w>      </span><span class=nt>paths</span><span class=p>:</span><span class=w>
 </span><span class=ln>19</span><span class=w>      </span>- <span class=nt>path</span><span class=p>:</span><span class=w> </span><span class=l>/</span><span class=w>
 </span><span class=ln>20</span><span class=w>        </span><span class=nt>pathType</span><span class=p>:</span><span class=w> </span><span class=l>Prefix</span><span class=w>
 </span><span class=ln>21</span><span class=w>        </span><span class=nt>backend</span><span class=p>:</span><span class=w>
 </span><span class=ln>22</span><span class=w>          </span><span class=nt>service</span><span class=p>:</span><span class=w>
-</span><span class=ln>23</span><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span><span class=ln>23</span><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w> </span><span class=c># replace with your service name</span><span class=w>
 </span><span class=ln>24</span><span class=w>            </span><span class=nt>port</span><span class=p>:</span><span class=w>
 </span><span class=ln>25</span><span class=w>              </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
-</span></code></pre></div><p>After applying your Ingress configuration the ClusterIssuer will request a certificate from ZeroSSL for <a href=http://www.example.com>www.example.com</a> and place it in the secret www-example-tls.</p>
-<p>And that's all! You've now configured cert-manager to use ZeroSSL!</p>
+</span></code></pre></div><p>After applying your Ingress configuration the ClusterIssuer would request a certificate from ZeroSSL for <a href=http://www.example.com>www.example.com</a> and place it in the secret www-example-tls. You'd then have secure encryption for your services! You can add multiple hosts and services to one Ingress as long as all of the services and Ingress are in the same namespace.</p>
+<p>And that's all! You've now configured cert-manager to automatically issue certificates with ZeroSSL.</p>
 <h3 id=troubleshooting>Troubleshooting</h3>
 <p>If anything goes wrong you can troubleshoot issues in a few ways.</p>
 <h4 id=check-clusterissuer>Check ClusterIssuer</h4>
