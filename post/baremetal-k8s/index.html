@@ -95,6 +95,13 @@ Jan 15, 2022</span>
 <li><a href=#enable-tls>Enable TLS</a></li>
 </ul>
 </li>
+<li><a href=#extras>Extras</a>
+<ul>
+<li><a href=#external-dns>external-dns</a></li>
+<li><a href=#cert-manager>cert-manager</a></li>
+<li><a href=#k8s_gateway>k8s_gateway</a></li>
+</ul>
+</li>
 </ul>
 </nav>
 </div>
@@ -303,6 +310,16 @@ To find the IP of our Ingress Controller, run:</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>kubectl apply -f ingress.yaml
 </code></pre></div><p>Now you should be able to access your web server with <a href=https://myk8swebserver.com>https://myk8swebserver.com</a>. It will say there's an invalid certificate, because nginx ingress created a self-signed certificate since we didn't supply one,but traffic will still be encrypted.</p>
 <p>Congrats! You've successfully created your own Kubernetes cluster! I hope this guide has given you the knowledge necessary to configure your cluster.</p>
+<h2 id=extras>Extras</h2>
+<p>There are a few extras you might want on your cluster. They really make Kubernets shine in my opinion.</p>
+<h3 id=external-dns>external-dns</h3>
+<p>External-DNS is able to synchronize our Services and Ingresses with our domain DNS records so we don't have to manually add them.</p>
+<p><a href=https://github.com/bitnami/charts/tree/master/bitnami/external-dns>charts/bitnami/external-dns at master · bitnami/charts (github.com)</a></p>
+<h3 id=cert-manager>cert-manager</h3>
+<p>Cert-manager can request SSL certificates automatically for you when you add new hosts to your Ingress resources, or when your certificates expire. I have a guide on how to set this up: <a href=https://www.bsmithio.com/post/cert-manager-zerossl/>How to Set Up Cert-Manager with ZeroSSL on Kubernetes</a></p>
+<h3 id=k8s_gateway>k8s_gateway</h3>
+<p>K8s_gateway acts as a DNS server that you can use to access your internal Kubernetes services that you do not wish to expose via External-DNS.
+<a href=https://github.com/ori-edge/k8s_gateway>k8s_gateway: A CoreDNS plugin to resolve all types of external Kubernetes resources (github.com)</a></p>
 <p>For further knowledge, here are some links to the documentation for the tools mentioned in this guide. The Kubernetes docs are a fantastic resource for learning more about the types of resources in Kubernetes</p>
 <p><a href=https://helm.sh/docs/>Helm</a>
 <a href=https://artifacthub.io/>Artifact Hub</a>
