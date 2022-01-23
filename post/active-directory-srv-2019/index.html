@@ -63,7 +63,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jan 23, 2022</span>
-<span class=post_time> · 9 min read</span><span>&nbsp;· <a href=/tags/active-directory title="Active Directory" class="post_tag button button_translucent">Active Directory
+<span class=post_time> · 4 min read</span><span>&nbsp;· <a href=/tags/active-directory title="Active Directory" class="post_tag button button_translucent">Active Directory
 </a><a href=/tags/windows-server-2019 title="Windows Server 2019" class="post_tag button button_translucent">Windows Server 2019
 </a>
 </span>
@@ -108,273 +108,215 @@ Jan 23, 2022</span>
 <p>Change your Default gateway to your router's IP that is on the same subnet. Mine is 192.168.10.2 in this instance.</p>
 <p>Change your DNS server to any DNS server you wish, e.g. 1.1.1.1 for Cloudflare DNS.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/server-ipv4-properties.png title="Open this web path in a new tab" target=_blank class=warning-link>/server-ipv4-properties.png</a></p>
-<p>Disk path: /static/server-ipv4-properties.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/server-ipv4-properties.png alt="Server IPv4 Properties" loading=lazy decoding=async width=399 height=452>
+</picture>
+</figure>
 </p>
 <h3 id=add-active-directory-and-dns-role>Add Active Directory and DNS role</h3>
 <p>Now we will add the Active Directory Domain Services and DNS roles to the server.</p>
 <p>Press the Windows key and type "Server Manager" and run it.</p>
 <p>Click on Add roles and features
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features.png</a></p>
-<p>Disk path: /static/roles-and-features.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features.png alt="Server Manager with Add roles and features highlighted" loading=lazy decoding=async width=755 height=333>
+</picture>
+</figure>
 </p>
 <p>Click Next
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features-wiz-1.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features-wiz-1.png</a></p>
-<p>Disk path: /static/roles-and-features-wiz-1.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features-wiz-1.png alt="Roles and Features Wizard Page 1" loading=lazy decoding=async width=784 height=554>
+</picture>
+</figure>
 </p>
 <p>Select "Role-based or feature-based installation".
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features-wiz-2.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features-wiz-2.png</a></p>
-<p>Disk path: /static/roles-and-features-wiz-2.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features-wiz-2.png alt="Roles and Features Wizard Page 2" loading=lazy decoding=async width=782 height=557>
+</picture>
+</figure>
 </p>
 <p>Select your server then click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features-wiz-3.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features-wiz-3.png</a></p>
-<p>Disk path: /static/roles-and-features-wiz-3.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features-wiz-3.png alt="Roles and Features Wizard Page 3" loading=lazy decoding=async width=783 height=557>
+</picture>
+</figure>
 </p>
 <p>Tick Active Directory Domain Services and DNS Server roles, follow the prompts for each role, then click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features-wiz-4.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features-wiz-4.png</a></p>
-<p>Disk path: /static/roles-and-features-wiz-4.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features-wiz-4.png alt="Roles and Features Wizard Page 4" loading=lazy decoding=async width=780 height=554>
+</picture>
+</figure>
 </p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/features-1.png title="Open this web path in a new tab" target=_blank class=warning-link>/features-1.png</a></p>
-<p>Disk path: /static/features-1.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/features-1.png alt="Active Directory Features" loading=lazy decoding=async width=413 height=435>
+</picture>
+</figure>
 </p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/features-2.png title="Open this web path in a new tab" target=_blank class=warning-link>/features-2.png</a></p>
-<p>Disk path: /static/features-2.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/features-2.png alt="DNS Features" loading=lazy decoding=async width=413 height=415>
+</picture>
+</figure>
 </p>
 <p>Click Next
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features-wiz-5.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features-wiz-5.png</a></p>
-<p>Disk path: /static/roles-and-features-wiz-5.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features-wiz-5.png alt="Roles and Features Wizard Page 5" loading=lazy decoding=async width=781 height=557>
+</picture>
+</figure>
 </p>
 <p>Click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features-wiz-6.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features-wiz-6.png</a></p>
-<p>Disk path: /static/roles-and-features-wiz-6.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features-wiz-6.png alt="Roles and Features Wizard Page 6" loading=lazy decoding=async width=781 height=557>
+</picture>
+</figure>
 </p>
 <p>Click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features-wiz-7.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features-wiz-7.png</a></p>
-<p>Disk path: /static/roles-and-features-wiz-7.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features-wiz-7.png alt="Roles and Features Wizard Page 7" loading=lazy decoding=async width=781 height=558>
+</picture>
+</figure>
 </p>
 <p>Click Install, then Close.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/roles-and-features-wiz-8.png title="Open this web path in a new tab" target=_blank class=warning-link>/roles-and-features-wiz-8.png</a></p>
-<p>Disk path: /static/roles-and-features-wiz-8.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/roles-and-features-wiz-8.png alt="Roles and Features Wizard Page 8" loading=lazy decoding=async width=783 height=553>
+</picture>
+</figure>
 </p>
 <p>You can check the status of the role installation by clicking the flag icon.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/notification-flag.png title="Open this web path in a new tab" target=_blank class=warning-link>/notification-flag.png</a></p>
-<p>Disk path: /static/notification-flag.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/notification-flag.png alt="Feature installation notification" loading=lazy decoding=async width=338 height=218>
+</picture>
+</figure>
 </p>
 <h3 id=post-deployment-configuration>Post-deployment Configuration</h3>
 <p>You should see a yellow triangle next to the flag icon, click it and then click Promote this server to a domain controller. You may need to click the refresh button for this to show up.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/post-deploy-notification.png title="Open this web path in a new tab" target=_blank class=warning-link>/post-deploy-notification.png</a></p>
-<p>Disk path: /static/post-deploy-notification.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/post-deploy-notification.png alt="Post-deploy Configuration notification" loading=lazy decoding=async width=334 height=212>
+</picture>
+</figure>
 </p>
 <p>Select Add a new forest and specify your domain name for Active Directory, then click Next. A few popular choices for your Root domain name are: ad.example.com, corp.example.com and local.example.com. Replace example.com with your domain name.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/adds-wiz-1.png title="Open this web path in a new tab" target=_blank class=warning-link>/adds-wiz-1.png</a></p>
-<p>Disk path: /static/adds-wiz-1.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/adds-wiz-1.png alt="Active Directory Domain Services Wizard Page 1" loading=lazy decoding=async width=757 height=553>
+</picture>
+</figure>
 </p>
 <p>Enter a password for DSRM, DSRM will allow an administrator repair or restore an Active Directory database, then click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/adds-wiz-2.png title="Open this web path in a new tab" target=_blank class=warning-link>/adds-wiz-2.png</a></p>
-<p>Disk path: /static/adds-wiz-2.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/adds-wiz-2.png alt="Active Directory Domain Services Wizard Page 2" loading=lazy decoding=async width=755 height=555>
+</picture>
+</figure>
 </p>
 <p>Click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/adds-wiz-3.png title="Open this web path in a new tab" target=_blank class=warning-link>/adds-wiz-3.png</a></p>
-<p>Disk path: /static/adds-wiz-3.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/adds-wiz-3.png alt="Active Directory Domain Services Wizard Page 3" loading=lazy decoding=async width=756 height=552>
+</picture>
+</figure>
 </p>
 <p>Click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/adds-wiz-4.png title="Open this web path in a new tab" target=_blank class=warning-link>/adds-wiz-4.png</a></p>
-<p>Disk path: /static/adds-wiz-4.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/adds-wiz-4.png alt="Active Directory Domain Services Wizard Page 4" loading=lazy decoding=async width=757 height=554>
+</picture>
+</figure>
 </p>
 <p>Click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/adds-wiz-5.png title="Open this web path in a new tab" target=_blank class=warning-link>/adds-wiz-5.png</a></p>
-<p>Disk path: /static/adds-wiz-5.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/adds-wiz-5.png alt="Active Directory Domain Services Wizard Page 5" loading=lazy decoding=async width=756 height=554>
+</picture>
+</figure>
 </p>
 <p>Review your selections, then click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/adds-wiz-6.png title="Open this web path in a new tab" target=_blank class=warning-link>/adds-wiz-6.png</a></p>
-<p>Disk path: /static/adds-wiz-6.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/adds-wiz-6.png alt="Active Directory Domain Services Wizard Page 6" loading=lazy decoding=async width=752 height=555>
+</picture>
+</figure>
 </p>
 <p>The wizard will then validate prerequisites.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/adds-wiz-7.png title="Open this web path in a new tab" target=_blank class=warning-link>/adds-wiz-7.png</a></p>
-<p>Disk path: /static/adds-wiz-7.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/adds-wiz-7.png alt="Active Directory Domain Services Wizard Page 7" loading=lazy decoding=async width=756 height=554>
+</picture>
+</figure>
 </p>
 <p>Once it is done click Install, then the server will restart.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/adds-wiz-8.png title="Open this web path in a new tab" target=_blank class=warning-link>/adds-wiz-8.png</a></p>
-<p>Disk path: /static/adds-wiz-8.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/adds-wiz-8.png alt="Active Directory Domain Services Wizard Page 8" loading=lazy decoding=async width=755 height=554>
+</picture>
+</figure>
 </p>
 <h3 id=add-users-and-groups>Add Users and Groups</h3>
 <p>Once your server has restarted, it will be a part of your AD domain. Log in and run Server Manager again. We will now add new users and groups to our AD domain.</p>
 <p>Navigate to Tools -> Active Directory Users and Computers.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/aduc-context.png title="Open this web path in a new tab" target=_blank class=warning-link>/aduc-context.png</a></p>
-<p>Disk path: /static/aduc-context.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/aduc-context.png alt="Tools Context Menu with Active DIrectory Users and Computers highlighted" loading=lazy decoding=async width=565 height=421>
+</picture>
+</figure>
 </p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/active-directory.png title="Open this web path in a new tab" target=_blank class=warning-link>/active-directory.png</a></p>
-<p>Disk path: /static/active-directory.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/active-directory.png alt="Active Directory Users and Computers Configuration Window" loading=lazy decoding=async width=876 height=605>
+</picture>
+</figure>
 </p>
 <h4 id=add-users>Add Users</h4>
 <p>Click the dropdown arrow next to your domain name, then click on users, and right click and select New -> User.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/user-context.png title="Open this web path in a new tab" target=_blank class=warning-link>/user-context.png</a></p>
-<p>Disk path: /static/user-context.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/user-context.png alt="Context menu with New -&amp;gt; User highlighted" loading=lazy decoding=async width=1048 height=607>
+</picture>
+</figure>
 </p>
 <p>Fill in the details like so and click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/user-details.png title="Open this web path in a new tab" target=_blank class=warning-link>/user-details.png</a></p>
-<p>Disk path: /static/user-details.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/user-details.png alt="Active Directory User Configuration" loading=lazy decoding=async width=432 height=374>
+</picture>
+</figure>
 </p>
 <p>Enter a password, it must contain an upper-case, lower-case, and special character, then make sure User must change password at next login is ticked, this is best practice, then click Next and then Finish.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/user-password.png title="Open this web path in a new tab" target=_blank class=warning-link>/user-password.png</a></p>
-<p>Disk path: /static/user-password.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/user-password.png alt="Active Directory User Password Configuration" loading=lazy decoding=async width=431 height=375>
+</picture>
+</figure>
 </p>
 <h4 id=add-groups>Add groups</h4>
 <p>Click the dropdown arrow next to your domain name, then click on users, and right click and select New -> Group.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/group-context.png title="Open this web path in a new tab" target=_blank class=warning-link>/group-context.png</a></p>
-<p>Disk path: /static/group-context.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/group-context.png alt="Context menu with New -&amp;gt; Group highlighted" loading=lazy decoding=async width=1055 height=607>
+</picture>
+</figure>
 </p>
 <p>Fill in the details like so then click OK.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/group-details.png title="Open this web path in a new tab" target=_blank class=warning-link>/group-details.png</a></p>
-<p>Disk path: /static/group-details.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/group-details.png alt="Active Directory Group Configuration" loading=lazy decoding=async width=432 height=370>
+</picture>
+</figure>
 </p>
 <h2 id=windows-10-client>Windows 10 Client</h2>
 <h3 id=join-active-directory-domain>Join Active Directory Domain</h3>
@@ -385,88 +327,70 @@ Jan 23, 2022</span>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>control.exe /name Microsoft.NetworkAndSharingCenter
 </code></pre></div><p>Network and Sharing Center should open. Now navigate to Change adapter settings, then right click on your network adapter and click Properties. Double click on "Internet Protocol Version 4 (TCP/IPv4)". Switch "Obtain DNS server address automatically" to "Use the following DNS server addresses".</p>
 <p>Change your DNS server the to domain controller's IP address, e.g. 192.168.10.3
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/client-ipv4-properties.png title="Open this web path in a new tab" target=_blank class=warning-link>/client-ipv4-properties.png</a></p>
-<p>Disk path: /static/client-ipv4-properties.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/client-ipv4-properties.png alt="Client IPv4 Properties" loading=lazy decoding=async width=397 height=452>
+</picture>
+</figure>
 </p>
 <h3 id=create-an-account-to-join-the-domain>Create An Account to Join the Domain</h3>
 <p>Follow the Add Users section again with a new user but this time untick "User must change password at next login". We will use this account to join computers to the domain.</p>
 <h3 id=join-domain>Join Domain</h3>
 <p>Press the Windows key then type "Access work or school" and hit enter.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/start-access-work-school.png title="Open this web path in a new tab" target=_blank class=warning-link>/start-access-work-school.png</a></p>
-<p>Disk path: /static/start-access-work-school.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/start-access-work-school.png alt="Start Menu with Access Work or School highlighted" loading=lazy decoding=async width=831 height=678>
+</picture>
+</figure>
 </p>
 <p>Click Connect.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/access-work-school.png title="Open this web path in a new tab" target=_blank class=warning-link>/access-work-school.png</a></p>
-<p>Disk path: /static/access-work-school.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/access-work-school.png alt="Access Work or School Settings" loading=lazy decoding=async width=1018 height=793>
+</picture>
+</figure>
 </p>
 <p>Click Join this device to a local Active Directory domain.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/join-domain-1.png title="Open this web path in a new tab" target=_blank class=warning-link>/join-domain-1.png</a></p>
-<p>Disk path: /static/join-domain-1.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/join-domain-1.png alt="Join a Local AD Domain" loading=lazy decoding=async width=652 height=632>
+</picture>
+</figure>
 </p>
 <p>Type in your Active Directory domain name, then click Next.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/join-domain-2.png title="Open this web path in a new tab" target=_blank class=warning-link>/join-domain-2.png</a></p>
-<p>Disk path: /static/join-domain-2.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/join-domain-2.png alt="Join a domain" loading=lazy decoding=async width=677 height=256>
+</picture>
+</figure>
 </p>
 <p>Enter your user credentials that you created above, then click OK.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/join-domain-3.png title="Open this web path in a new tab" target=_blank class=warning-link>/join-domain-3.png</a></p>
-<p>Disk path: /static/join-domain-3.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/join-domain-3.png alt="User Credentials for the AD domain" loading=lazy decoding=async width=451 height=295>
+</picture>
+</figure>
 </p>
 <p>Click Skip, then Restart Now.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/join-domain-4.png title="Open this web path in a new tab" target=_blank class=warning-link>/join-domain-4.png</a></p>
-<p>Disk path: /static/join-domain-4.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/join-domain-4.png alt="User Configuration for the domain" loading=lazy decoding=async width=677 height=396>
+</picture>
+</figure>
 </p>
 <p>Once your computer has restarted, click on Other user, then login with one of your AD user accounts.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/domain-login.png title="Open this web path in a new tab" target=_blank class=warning-link>/domain-login.png</a></p>
-<p>Disk path: /static/domain-login.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/domain-login.png alt="Windows Login Screen" loading=lazy decoding=async width=1918 height=968>
+</picture>
+</figure>
 </p>
 <p>Since we had "User must change password at next login" ticked, we'll get a prompt to change the password, click OK and fill in a new password.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=/change-password.png title="Open this web path in a new tab" target=_blank class=warning-link>/change-password.png</a></p>
-<p>Disk path: /static/change-password.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: false</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/active-directory-srv-2019/change-password.png alt="Windows Login Screen Change Password Prompt" loading=lazy decoding=async width=1918 height=968>
+</picture>
+</figure>
 </p>
 <h2 id=conclusion>Conclusion</h2>
 <p>You've successfully created an AD domain and joined a Windows 10 computer to the AD domain!</p>
