@@ -1,6 +1,6 @@
 <!doctype html><html lang=en data-figures=true class=page data-mode=dim>
 <head>
-<title>How to Set Up a Bare Metal Kubernetes Cluster with MetalLB | bsmithio</title>
+<title>How to Configure a Bare Metal Kubernetes Cluster with MetalLB | bsmithio</title>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta http-equiv=x-ua-compatible content="IE=edge">
@@ -8,13 +8,13 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','XXXXXXXXXX')</script>
 <meta property="og:locale" content="en">
 <meta property="og:type" content="article">
-<meta name=description content="How to Set Up Kuberenetes Bare Metal Cluster with MetalLB">
+<meta name=description content="How to Configure Kuberenetes Bare Metal Cluster with MetalLB">
 <meta name=twitter:card content="summary">
 <meta name=twitter:creator content>
-<meta name=twitter:title content="How to Set Up a Bare Metal Kubernetes Cluster with MetalLB">
+<meta name=twitter:title content="How to Configure a Bare Metal Kubernetes Cluster with MetalLB">
 <meta property="og:url" content="/post/baremetal-k8s/">
-<meta property="og:title" content="How to Set Up a Bare Metal Kubernetes Cluster with MetalLB">
-<meta property="og:description" content="How to Set Up Kuberenetes Bare Metal Cluster with MetalLB">
+<meta property="og:title" content="How to Configure a Bare Metal Kubernetes Cluster with MetalLB">
+<meta property="og:description" content="How to Configure Kuberenetes Bare Metal Cluster with MetalLB">
 <meta property="og:image" content="/post/baremetal-k8s/k8s.png">
 <link rel=apple-touch-icon sizes=180x180 href=/icons/apple-touch-icon.png>
 <link rel=icon type=image/png sizes=32x32 href=/icons/favicon-32x32.png>
@@ -58,7 +58,7 @@
 <main>
 <div class="grid-inverse wrap content">
 <article class=post_content>
-<h1 class=post_title>How to Set Up a Bare Metal Kubernetes Cluster with MetalLB</h1>
+<h1 class=post_title>How to Configure a Bare Metal Kubernetes Cluster with MetalLB</h1>
 <div class=post_meta>
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
@@ -106,7 +106,7 @@ Jan 15, 2022</span>
 </ul>
 </nav>
 </div>
-<div class=post_body><p>In this guide I will show you how to set up your own Kubernetes cluster! at home. As well as how to configure an Ingress and Load Balancer so you can access your services outside of the cluster. This guide assumes you're running Ubuntu 20.04.</p>
+<div class=post_body><p>In this guide I will show you how to configure your own Kubernetes cluster! at home. As well as how to configure an Ingress and Load Balancer so you can access your services outside of the cluster. This guide assumes you're running Ubuntu 20.04.</p>
 <h2 id=install-docker>Install Docker</h2>
 <p>You will need to install Docker on each Kubernetes node in your cluster. Docker is our container runtime for the cluster, there are other options, but we'll use Docker for this guide. To install Docker on Ubuntu run the following commands:</p>
 <h3 id=uninstall-old-versions-of-docker>Uninstall Old Versions of Docker</h3>
@@ -280,7 +280,7 @@ To find the IP of our Ingress Controller, run:</p>
 <p>Edit your hosts file to include the following:</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>&lt;INGRESS-IP&gt; myk8swebserver.com
 </code></pre></div><h3 id=view-the-web-page>View the Web Page</h3>
-<p>Now that we have our app running, our Ingress configured, and our hosts file set up. We should be able to type <a href=http://myk8swebserver.com>http://myk8swebserver.com</a> in a browser and see a "Hello Kubernetes!" message.</p>
+<p>Now that we have our app running, our Ingress configured, and our hosts file configure. We should be able to type <a href=http://myk8swebserver.com>http://myk8swebserver.com</a> in a browser and see a "Hello Kubernetes!" message.</p>
 <h3 id=enable-tls>Enable TLS</h3>
 <p>You can also use an Ingress for TLS termination, as in, your Ingress Controller will handle TLS, while your backend uses HTTP. To set this up, there's a minor addition to our Ingress resource:</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=ln> 1</span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.k8s.io/v1</span><span class=w>
@@ -320,7 +320,7 @@ To find the IP of our Ingress Controller, run:</p>
 <p>External-DNS is able to synchronize our Services and Ingresses with our domain DNS records so we don't have to manually add them.</p>
 <p><a href=https://github.com/bitnami/charts/tree/master/bitnami/external-dns>charts/bitnami/external-dns at master · bitnami/charts (github.com)</a></p>
 <h3 id=cert-manager>cert-manager</h3>
-<p>Cert-manager can request SSL certificates automatically for you when you add new hosts to your Ingress resources, or when your certificates expire. I have a guide on how to set this up: <a href=https://www.bsmithio.com/post/cert-manager-zerossl/>How to Set Up Cert-Manager with ZeroSSL on Kubernetes</a></p>
+<p>Cert-manager can request SSL certificates automatically for you when you add new hosts to your Ingress resources, or when your certificates expire. I have a guide on how to set this up: <a href=https://www.bsmithio.com/post/cert-manager-zerossl/>How to Configure Cert-Manager with ZeroSSL on Kubernetes</a></p>
 <h3 id=k8s_gateway>k8s_gateway</h3>
 <p>K8s_gateway acts as a DNS server that you can use to access your internal Kubernetes services that you do not wish to expose via External-DNS.
 <a href=https://github.com/ori-edge/k8s_gateway>k8s_gateway: A CoreDNS plugin to resolve all types of external Kubernetes resources (github.com)</a></p>
@@ -347,13 +347,13 @@ Technologist, tinkerer, perpetual student.
 <h2 class=mt-4>Recent Posts</h2>
 <ul class=flex-column>
 <li>
-<a href=/post/active-directory-srv-2019/ class=nav-link title="How to Set Up Active Directory on Windows Server 2019">How to Set Up Active Directory on Windows Server 2019</a>
+<a href=/post/active-directory-srv-2019/ class=nav-link title="How to Configure Active Directory on Windows Server 2019">How to Configure Active Directory on Windows Server 2019</a>
 </li>
 <li>
-<a href=/post/vlan-dhcp/ class=nav-link title="How to Set Up DHCP for Multiple VLANs with OPNsense and Windows Server 2019">How to Set Up DHCP for Multiple VLANs with OPNsense and Windows Server 2019</a>
+<a href=/post/vlan-dhcp/ class=nav-link title="How to Configure DHCP for Multiple VLANs with OPNsense and Windows Server 2019">How to Configure DHCP for Multiple VLANs with OPNsense and Windows Server 2019</a>
 </li>
 <li>
-<a href=/post/cert-manager-zerossl/ class=nav-link title="How to Set Up Cert-Manager with ZeroSSL on Kubernetes">How to Set Up Cert-Manager with ZeroSSL on Kubernetes</a>
+<a href=/post/cert-manager-zerossl/ class=nav-link title="How to Configure Cert-Manager with ZeroSSL on Kubernetes">How to Configure Cert-Manager with ZeroSSL on Kubernetes</a>
 </li>
 </ul>
 <div>
