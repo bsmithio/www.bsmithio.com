@@ -85,7 +85,13 @@ Jan 14, 2022</span>
 <li><a href=#dns01-provider>DNS01 Provider</a></li>
 <li><a href=#apply-yaml-template>Apply YAML Template</a></li>
 <li><a href=#setup-ingress-to-use-the-clusterissuer>Setup Ingress to Use the ClusterIssuer</a></li>
-<li><a href=#troubleshooting>Troubleshooting</a></li>
+</ul>
+</li>
+<li><a href=#conclusion>Conclusion</a></li>
+<li><a href=#troubleshooting>Troubleshooting</a>
+<ul>
+<li><a href=#check-clusterissuer>Check ClusterIssuer</a></li>
+<li><a href=#check-certificaterequest>Check CertificateRequest</a></li>
 </ul>
 </li>
 </ul>
@@ -225,10 +231,11 @@ Follow along to set up Cert-Manager with ZeroSSL on your Kubernetes cluster!</p>
 </span><span class=ln>24</span><span class=w>            </span><span class=nt>port</span><span class=p>:</span><span class=w>
 </span><span class=ln>25</span><span class=w>              </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
 </span></code></pre></div><p>After applying your Ingress configuration the ClusterIssuer would request a certificate from ZeroSSL for <a href=http://www.example.com>www.example.com</a> and place it in the secret www-example-tls. You'd then have secure encryption for your services! You can add multiple hosts and services to one Ingress as long as all of the services and Ingress are in the same namespace.</p>
-<p>And that's all! You've now configured cert-manager to automatically issue certificates with ZeroSSL.</p>
-<h3 id=troubleshooting>Troubleshooting</h3>
+<h2 id=conclusion>Conclusion</h2>
+<p>And that's all! You've now configured cert-manager to automatically issue certificates to your services with ZeroSSL. Feel free to contact me for help or if I should make any corrections to this blog post.</p>
+<h2 id=troubleshooting>Troubleshooting</h2>
 <p>If anything goes wrong you can troubleshoot issues in a few ways.</p>
-<h4 id=check-clusterissuer>Check ClusterIssuer</h4>
+<h3 id=check-clusterissuer>Check ClusterIssuer</h3>
 <p>To see if the ClusterIssuer was successfully registered run</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl describe clusterissuer zerossl-prod
 </code></pre></div><p>if everything went smoothly you should see something like this</p>
@@ -239,7 +246,7 @@ Follow along to set up Cert-Manager with ZeroSSL on your Kubernetes cluster!</p>
 <span class=ln>5</span>    Reason:                ACMEAccountRegistered
 <span class=ln>6</span>    Status:                True
 <span class=ln>7</span>    Type:                  Ready
-</code></pre></div><h4 id=check-certificaterequest>Check CertificateRequest</h4>
+</code></pre></div><h3 id=check-certificaterequest>Check CertificateRequest</h3>
 <p>To check the status of the certificate request first find the name of the request</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl get certificaterequest -n &lt;your-ingress-namespace&gt;<span class=sb>`</span>
 </code></pre></div><p>then</p>
@@ -256,7 +263,7 @@ Follow along to set up Cert-Manager with ZeroSSL on your Kubernetes cluster!</p>
 <span class=ln> 9</span>    Reason:                Issued
 <span class=ln>10</span>    Status:                True
 <span class=ln>11</span>    Type:                  Ready
-</code></pre></div><p>Feel free to contact me if you need any help!</p>
+</code></pre></div>
 </div>
 <div class=post_comments>
 </div>
