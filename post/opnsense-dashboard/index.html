@@ -232,7 +232,7 @@ After you've made the necessary changes, run <code>docker-compose up -d</code> i
 <p>You must edit this file and type in your InfluxDB URL, InfluxDB Telegraf API token, organization, and bucket under [[outputs.influxdb_v2]].</p>
 <p>You will need to place this config in /usr/local/etc on your OPNsense system.</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>cd /usr/local/etc
-<span class=ln>2</span>curl https://github.com/bsmithio/OPNsense-Dashboard/blob/master/config/telegraf.conf
+<span class=ln>2</span>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/telegraf.conf
 <span class=ln>3</span># Make the necessary changes with vi, if you wish to edit with nano you&#39;ll need to install nano with pkg install nano
 <span class=ln>4</span>vi telegraf.conf
 </code></pre></div><h3 id=telegraf-plugins>Telegraf Plugins</h3>
