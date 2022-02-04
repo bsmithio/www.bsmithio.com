@@ -322,8 +322,8 @@ To find the IP of our Ingress Controller, run:</p>
 <h3 id=cert-manager>cert-manager</h3>
 <p>Cert-manager can request SSL certificates automatically for you when you add new hosts to your Ingress resources, or when your certificates expire. I have a guide on how to set this up: <a href=https://www.bsmithio.com/post/cert-manager-zerossl/>How to Configure Cert-Manager with ZeroSSL on Kubernetes</a></p>
 <h3 id=k8s_gateway>k8s_gateway</h3>
-<p>K8s_gateway acts as a DNS server that you can use to access your internal Kubernetes services that you do not wish to expose via External-DNS.
-<a href=https://github.com/ori-edge/k8s_gateway>k8s_gateway: A CoreDNS plugin to resolve all types of external Kubernetes resources (github.com)</a></p>
+<p>K8s_gateway acts as a DNS server that you can use to access your internal Kubernetes services that you do not wish to expose via External-DNS. For example, if all of your services are on internal.example.com, you could configure a conditional forwarder on your main DNS server to forward all DNS queries for internal.example.com to k8s_gateway's IP address.</p>
+<p><a href=https://github.com/ori-edge/k8s_gateway>k8s_gateway: A CoreDNS plugin to resolve all types of external Kubernetes resources (github.com)</a></p>
 <h2 id=resources>Resources</h2>
 <p>For further knowledge, here are some links to the documentation for the tools mentioned in this guide. The Kubernetes docs are a fantastic resource for learning more about the types of resources in Kubernetes</p>
 <p><a href=https://kubernetes.github.io/ingress-nginx/>NGINX Ingress Controller</a><br>
