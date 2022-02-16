@@ -333,7 +333,7 @@ After you've made the necessary changes, run <code>docker-compose up -d</code> i
 <p>If you get no good output from running the plugin directly, try the following command before moving to the below step.</p>
 <pre><code># telegraf --test --config /usr/local/etc/telegraf.conf
 </code></pre>
-<p>To troubleshoot plugins further, add the following lines to the agent block in /usr/local/etc/telegraf.conf and send a HUP to the telegraf pid. You're going to need to do this from a ssh shell. One you update the config you are going to need to tell telegraf to read the new configs. If you restart telegraf from pfSense, this will not work since it will overwrite your changes.</p>
+<p>To troubleshoot plugins further, add the following lines to the agent block in /usr/local/etc/telegraf.conf and send a HUP to the telegraf pid. You're going to need to do this from a ssh shell. Once you update the config you are going to need to tell telegraf to read the new configs. If you restart telegraf from OPNsense, this will not work since it will overwrite your changes.</p>
 <h3 id=telegraf-config-paste-in-to-agent-section>Telegraf Config (Paste in to [agent] section)</h3>
 <pre><code>debug = true
 quiet = false
