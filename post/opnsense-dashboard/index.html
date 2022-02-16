@@ -331,41 +331,35 @@ After you've made the necessary changes, run <code>docker-compose up -d</code> i
 <p><code># cat -e /usr/local/bin/telegraf_pfinterface.php</code></p>
 <h3 id=telegraf-troubleshooting>Telegraf Troubleshooting</h3>
 <p>If you get no good output from running the plugin directly, try the following command before moving to the below step.</p>
-<pre><code># telegraf --test --config /usr/local/etc/telegraf.conf
-</code></pre>
+<p><code>telegraf --test --config /usr/local/etc/telegraf.conf</code></p>
 <p>To troubleshoot plugins further, add the following lines to the agent block in /usr/local/etc/telegraf.conf and send a HUP to the telegraf pid. You're going to need to do this from a ssh shell. Once you update the config you are going to need to tell telegraf to read the new configs. If you restart telegraf from OPNsense, this will not work since it will overwrite your changes.</p>
 <h3 id=telegraf-config-paste-in-to-agent-section>Telegraf Config (Paste in to [agent] section)</h3>
-<pre><code>debug = true
-quiet = false
-logfile = &quot;/var/log/telegraf/telegraf.log&quot;
-</code></pre>
-<h3 id=restarting-telegraf>Restarting Telegraf</h3>
-<pre><code># ps aux | grep '[t]elegraf.conf'
-# kill -HUP &lt;pid of telegraf proces&gt;
-</code></pre>
-<p>Now go read /var/log/telegraf/telegraf.log</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>debug = true
+<span class=ln>2</span>quiet = false
+<span class=ln>3</span>logfile = &#34;/var/log/telegraf/telegraf.log&#34;
+</code></pre></div><h3 id=restarting-telegraf>Restarting Telegraf</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>ps aux | grep &#39;[t]elegraf.conf&#39;
+<span class=ln>2</span>kill -HUP &lt;pid of telegraf proces&gt;
+</code></pre></div><p>Now go read /var/log/telegraf/telegraf.log</p>
 <h3 id=influxdb>InfluxDB</h3>
 <p>When in doubt, run a few queries to see if the data you are looking for is being populated.
 I recommend doing this in Grafana's Explore tab.</p>
 <h3 id=view-measurements>View measurements</h3>
-<pre><code>import &quot;influxdata/influxdb/schema&quot;
-
-schema.measurements(bucket: &quot;opnsense&quot;)
-</code></pre>
-<h3 id=view-field-values>View field values</h3>
-<pre><code>from(bucket: &quot;opnsense&quot;)
-  |&gt; range(start: -24h)
-  |&gt; filter(fn: (r) =&gt; r[&quot;_measurement&quot;] == &quot;system&quot;)
-  |&gt; limit(n:10)
-</code></pre>
-<h3 id=how-to-drop-an-influxdb-v2-measurement>How to drop an InfluxDB v2 measurement</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>import &#34;influxdata/influxdb/schema&#34;
+<span class=ln>2</span>
+<span class=ln>3</span>schema.measurements(bucket: &#34;opnsense&#34;)
+</code></pre></div><h3 id=view-field-values>View field values</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>from(bucket: &#34;opnsense&#34;)
+<span class=ln>2</span>  |&gt; range(start: -24h)
+<span class=ln>3</span>  |&gt; filter(fn: (r) =&gt; r[&#34;_measurement&#34;] == &#34;system&#34;)
+<span class=ln>4</span>  |&gt; limit(n:10)
+</code></pre></div><h3 id=how-to-drop-an-influxdb-v2-measurement>How to drop an InfluxDB v2 measurement</h3>
 <p>You must access your influx instance's shell to do this.
 To do so run
 <code>sudo docker exec -it influxdb /bin/bash</code>
 on your docker host.</p>
 <p>Then use the following</p>
-<pre><code>bash-4.4# influx delete --bucket &quot;$YourBucket&quot; --predicate '_measurement=&quot;$Example&quot;' -o $organization --start &quot;1970-01-01T00:00:00Z&quot; --stop &quot;2050-12-31T23:59:00Z&quot; --token &quot;$YourAPIToken&quot;
-</code></pre>
+<p><code>bash-4.4# influx delete --bucket "$YourBucket" --predicate '_measurement="$Example"' -o $organization --start "1970-01-01T00:00:00Z" --stop "2050-12-31T23:59:00Z" --token "$YourAPIToken"</code></p>
 <h3 id=learn-more-about-flux-queries>Learn more about Flux queries</h3>
 <p><a href=https://docs.influxdata.com/influxdb/cloud/query-data/flux/query-fields/>https://docs.influxdata.com/influxdb/cloud/query-data/flux/query-fields/</a></p>
 <p><a href=https://docs.influxdata.com/influxdb/cloud/query-data/flux/explore-schema/>https://docs.influxdata.com/influxdb/cloud/query-data/flux/explore-schema/</a></p>
