@@ -224,31 +224,56 @@ After you've made the necessary changes, run <code>docker-compose up -d</code> i
 <h2 id=configuring-influxdb>Configuring InfluxDB</h2>
 <p>After InfluxDB is started, go to http://(ip of docker server):8086, you will need to setup your username, password, bucket and organization here. Once that is done navigate to the Data tab, click on Telegraf, and create a configuration for a system. Name it, and copy your API token, you will need this for your telegraf configuration. I recommend generating another API token for Grafana. Click on API tokens -> Generate API Token -> Read/Write Access -> Click on your bucket under Read -> and Save. Copy this somewhere as well, you'll need it for Grafana.</p>
 <h2 id=configuring-telegraf>Configuring Telegraf</h2>
-<p>You must manually install Telegraf on OPNsense, as the OPNsense Telegraf plugin does not currently support custom telegraf configuration. To do so, SSH into your OPNsense router and use the command</p>
-<p><code>sudo pkg install telegraf</code></p>
-<p>After that, use these commands. The first, enables Telegraf to start on boot, and the second, adds Telegraf to sudoers and restricts nopasswd to only what Telegraf needs to run as root.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>printf &#39;telegraf_enable=&#34;YES&#34;&#39; &gt; /etc/rc.conf.d/telegraf
-<span class=ln>2</span>
-<span class=ln>3</span>printf &#39;telegraf ALL=(root) NOPASSWD: /sbin/pfctl -s info,/usr/local/bin/telegraf_pfifgw.php&#39; &gt;&gt; /usr/local/etc/sudoers
-</code></pre></div><p>You will need this <a href=https://github.com/bsmithio/OPNsense-Dashboard/blob/master/config/telegraf.conf>telegraf config</a> file.</p>
-<p>You must edit this file and type in your InfluxDB URL, InfluxDB Telegraf API token, organization, and bucket under [[outputs.influxdb_v2]].</p>
-<p>You will need to place this config in /usr/local/etc on your OPNsense system.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>cd /usr/local/etc
-<span class=ln>2</span>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/telegraf.conf
-<span class=ln>3</span># Make the necessary changes with vi, if you wish to edit with nano you&#39;ll need to install nano with pkg install nano
-<span class=ln>4</span>vi telegraf.conf
+<p>Install the Telegraf plugin on OPNsense, to do so, navigate to System -> Firmware -> Plugins -> Search for telegraf, and click the plus icon to install.
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./telegraf-install.png alt="Install Telegraf" loading=lazy decoding=async width=1825 height=757>
+</picture>
+</figure>
+</p>
+<p>Navigate to Services -> Telegraf -> Input</p>
+<p>Enable Network and PF Inputs.
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./inputs.png alt=Inputs loading=lazy decoding=async width=417 height=68>
+</picture>
+</figure>
+</p>
+<p>Then click Save.</p>
+<p>Now navigate to Services -> Telegraf -> Output</p>
+<p>Enable Influx v2 Output and fill in the following:</p>
+<p>Influx v2 URL: Your InfluxDB URL, this will be the IP address or hostname of your system that is running InfluxDB. E.g http://192.168.1.10:8086</p>
+<p>Influx v2 Token: Your InfluxDB Token</p>
+<p>Influx v2 Organization: Your InfluxDB Organization</p>
+<p>Influx v2 Bucket: Your InfluxDB Bucket</p>
+<p>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./influxdb-settings.png alt="Output Config" loading=lazy decoding=async width=778 height=229>
+</picture>
+</figure>
+</p>
+<p>Then click Save.</p>
+<p>After that, we need to add telegraf to sudoers and use nopasswd so telegraf doesn't need a password when running telegraf_pfifgw.php with sudo.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>printf &#39;telegraf ALL=(root) NOPASSWD: /usr/local/bin/telegraf_pfifgw.php&#39; &gt;&gt; /usr/local/etc/sudoers
+</code></pre></div><p>You will need this <a href=https://github.com/bsmithio/OPNsense-Dashboard/blob/master/config/custom.conf>custom</a> telegraf config file.</p>
+<p>Download it and place it in /usr/local/etc/telegraf.d</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>cd /usr/local/etc/telegraf.d
+<span class=ln>2</span>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/custom.conf -o custom.conf
 </code></pre></div><h3 id=telegraf-plugins>Telegraf Plugins</h3>
 <p><strong>Plugins must be copied to your OPNsense system</strong></p>
 <p>Place <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php>telegraf_pfifgw.php</a> and <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_temperature.sh>telegraf_temperature.sh</a> in /usr/local/bin and chmod them to 755.</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>cd /usr/local/bin
-<span class=ln>2</span>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php
-<span class=ln>3</span>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_temperature.sh
+<span class=ln>2</span>curl &#34;https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php&#34; -o telegraf_pfifgw.php
+<span class=ln>3</span>curl &#34;https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_temperature.sh&#34; -o telegraf_temperature.sh
 <span class=ln>4</span>chmod 755 telegraf_temperature.sh telegraf_pfifgw.php
 </code></pre></div><p>Test these out before starting the telegraf service by executing them</p>
-<p><code>./telegraf_pfifgw.php</code></p>
+<p><code>sudo ./telegraf_pfifgw.php</code></p>
 <p><code>./telegraf_temperature.sh</code></p>
 <p>The temperature plugin may not work on every system, if you receive <code>sysctl: unknown oid 'hw.acpi.thermal'</code> comment out or remove that line from the plugin.</p>
-<p>After this is done, use <code>sudo service telegraf restart</code> to start telegraf with the new configuration.</p>
+<p>After this is done, navigate to Services -> Telegraf -> General -> Enable Telegraf Agent and click Save</p>
+<p>Lastly, check if telegraf is running</p>
+<p><code>sudo service telegraf status</code></p>
 <h2 id=configuring-graylog>Configuring Graylog</h2>
 <h3 id=add-geoip-to-graylog>Add GeoIP to Graylog</h3>
 <p>To make the map work on Grafana, you must create a MaxMind account here <a href=https://www.maxmind.com/en/geolite2/signup>https://www.maxmind.com/en/geolite2/signup</a>. Then generate a license key by going to Account -> Manage License Keys -> Generate New License Key. Copy this key somewhere because you'll need it again soon.</p>
@@ -281,7 +306,7 @@ After you've made the necessary changes, run <code>docker-compose up -d</code> i
 <p>
 <figure>
 <picture>
-<img class="image_figure image_internal" src=/post/opnsense-dashboard/processors.png alt="Graylog Message Processors" loading=lazy decoding=async width=631 height=620>
+<img class="image_figure image_internal" src=/post/opnsense-dashboard/./processors.png alt="Graylog Message Processors" loading=lazy decoding=async width=631 height=620>
 </picture>
 </figure>
 </p>
