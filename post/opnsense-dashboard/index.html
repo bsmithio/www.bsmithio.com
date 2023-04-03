@@ -65,7 +65,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jan 12, 2022</span>
-<span class=post_time> · 11 min read</span><span>&nbsp;· <a href=../../tags/opnsense title=OPNsense class="post_tag button button_translucent">OPNsense
+<span class=post_time> · 8 min read</span><span>&nbsp;· <a href=../../tags/opnsense title=OPNsense class="post_tag button button_translucent">OPNsense
 </a>
 </span>
 </div>
@@ -85,10 +85,6 @@ Jan 12, 2022</span>
 <li><a href=#configuring-influxdb>Configuring InfluxDB</a></li>
 <li><a href=#configuring-telegraf>Configuring Telegraf</a>
 <ul>
-<li><a href=#for-previous-users>For previous users</a></li>
-<li><a href=#install-the-plugin-and-configure-options>Install the plugin and configure options</a></li>
-<li><a href=#alternative-opnsense-configuration-via-ansible>Alternative OPNSense Configuration via Ansible</a></li>
-<li><a href=#add-telegraf-to-sudoers>Add telegraf to sudoers</a></li>
 <li><a href=#telegraf-plugins>Telegraf Plugins</a></li>
 </ul>
 </li>
@@ -103,27 +99,19 @@ Jan 12, 2022</span>
 <ul>
 <li><a href=#add-influxdb-and-elasticsearch-data-sources>Add InfluxDB and ElasticSearch data sources</a></li>
 <li><a href=#import-dashboard>Import Dashboard</a></li>
-<li><a href=#configure-variables>Configure Variables</a></li>
-</ul>
-</li>
-<li><a href=#configuration-for-the-suricata-dashboard-optional>Configuration for the Suricata dashboard #Optional</a>
-<ul>
-<li><a href=#add-the-necessary-files>Add the necessary files</a></li>
-<li><a href=#restart-suricata-and-telegraf>Restart Suricata and Telegraf</a></li>
-<li><a href=#import-the-suricata-dashboard>Import the Suricata Dashboard</a></li>
 </ul>
 </li>
 <li><a href=#troubleshooting>Troubleshooting</a>
 <ul>
 <li><a href=#telegraf-plugins-1>Telegraf Plugins</a></li>
 <li><a href=#telegraf-troubleshooting>Telegraf Troubleshooting</a></li>
+<li><a href=#telegraf-config-paste-in-to-agent-section>Telegraf Config (Paste in to [agent] section)</a></li>
+<li><a href=#restarting-telegraf>Restarting Telegraf</a></li>
 <li><a href=#influxdb>InfluxDB</a></li>
 <li><a href=#view-measurements>View measurements</a></li>
 <li><a href=#view-field-values>View field values</a></li>
 <li><a href=#how-to-drop-an-influxdb-v2-measurement>How to drop an InfluxDB v2 measurement</a></li>
 <li><a href=#learn-more-about-flux-queries>Learn more about Flux queries</a></li>
-<li><a href=#suricata-troubleshooting>Suricata Troubleshooting</a></li>
-<li><a href=#map-issues>Map Issues</a></li>
 </ul>
 </li>
 </ul>
@@ -132,88 +120,159 @@ Jan 12, 2022</span>
 <div class=post_body><p>Want to have an awesome dashboard for your OPNsense firewall?</p>
 <p>Follow along to set one up!</p>
 <h2 id=docker>Docker</h2>
-<p>To simplify everything, we'll use a Docker Compose file.</p>
-<p>You will need to have Docker and Docker Compose installed on a server that will host the dashboard.</p>
+<p>To simplify everything, we'll use a docker compose file.</p>
+<p>You'll need to have Docker and Docker-Compose installed on the server that will host the dashboard.</p>
 <p><a href=https://docs.docker.com/engine/install/>Install Docker</a></p>
 <p><a href=https://docs.docker.com/compose/install/>Install Docker Compose</a></p>
-<p>After you've installed Docker and Docker Compose, download the docker-compose.yaml from this repo.</p>
-<p><code>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/docker-compose.yaml -o docker-compose.yaml</code></p>
-<p>It's important that you change the TZ environment variable to your timezone for everything to work properly.
+<p>After you've installed Docker and Docker Compose, copy this code block to a file named docker-compose.yaml.
+It's important that you change the TZ environment variable to your timezone for everything to work properly.
 I also recommend you change the passwords in this compose file as well.
-After you've made the necessary changes, run <code>docker-compose up -d</code> in the same directory as your docker-compose.yaml.
-Once you have your docker containers running, follow the steps below.</p>
+After you've made the necessary changes, run <code>docker-compose up -d</code> in the same directory as your docker-compose.yaml.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln> 1</span>version: &#39;3&#39;
+<span class=ln> 2</span>services:
+<span class=ln> 3</span>  mongodb:
+<span class=ln> 4</span>    container_name: mongodb
+<span class=ln> 5</span>    image: mongo:4.4.10
+<span class=ln> 6</span>    volumes:
+<span class=ln> 7</span>      - mongodb_data:/data/db
+<span class=ln> 8</span>    restart: &#34;unless-stopped&#34;
+<span class=ln> 9</span>    environment:
+<span class=ln>10</span>      # Change this to your time zone, valid time zones can be found here: https://www.joda.org/joda-time/timezones.html
+<span class=ln>11</span>      - TZ=CST6CDT
+<span class=ln>12</span>  elasticsearch:
+<span class=ln>13</span>    container_name: elasticsearch
+<span class=ln>14</span>    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+<span class=ln>15</span>    volumes:
+<span class=ln>16</span>      - es_data:/usr/share/elasticsearch/data
+<span class=ln>17</span>    environment:
+<span class=ln>18</span>      # Change this to your time zone, valid time zones can be found here: https://www.joda.org/joda-time/timezones.html
+<span class=ln>19</span>      - TZ=CST6CDT
+<span class=ln>20</span>      - http.host=0.0.0.0
+<span class=ln>21</span>      - transport.host=localhost
+<span class=ln>22</span>      - network.host=0.0.0.0
+<span class=ln>23</span>      - &#34;ES_JAVA_OPTS=-Xms512m -Xmx512m&#34;
+<span class=ln>24</span>    ulimits:
+<span class=ln>25</span>      memlock:
+<span class=ln>26</span>        soft: -1
+<span class=ln>27</span>        hard: -1
+<span class=ln>28</span>    mem_limit: 1g
+<span class=ln>29</span>    restart: &#34;unless-stopped&#34;
+<span class=ln>30</span>  graylog:
+<span class=ln>31</span>    container_name: graylog
+<span class=ln>32</span>    image: graylog/graylog:4.2.4
+<span class=ln>33</span>    volumes:
+<span class=ln>34</span>      - graylog_data:/usr/share/graylog/data
+<span class=ln>35</span>    environment:
+<span class=ln>36</span>      # Change this to your time zone, valid time zones can be found here: https://www.joda.org/joda-time/timezones.html
+<span class=ln>37</span>      - TZ=CST6CDT
+<span class=ln>38</span>      # CHANGE ME (must be at least 16 characters)!
+<span class=ln>39</span>      - GRAYLOG_PASSWORD_SECRET=ZDcwMzQ3NTE4ZTIwM
+<span class=ln>40</span>      # Username is &#34;admin&#34;
+<span class=ln>41</span>      # Password is &#34;admin&#34;, change this to your own hashed password. &#39;echo -n &#34;password&#34; | sha256sum&#39;
+<span class=ln>42</span>      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+<span class=ln>43</span>      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+<span class=ln>44</span>    entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh
+<span class=ln>45</span>    links:
+<span class=ln>46</span>      - mongodb:mongo
+<span class=ln>47</span>      - elasticsearch
+<span class=ln>48</span>    depends_on:
+<span class=ln>49</span>      - mongodb
+<span class=ln>50</span>      - elasticsearch
+<span class=ln>51</span>    ports:
+<span class=ln>52</span>      # Graylog web interface and REST API
+<span class=ln>53</span>      - 9000:9000
+<span class=ln>54</span>      # Syslog UDP
+<span class=ln>55</span>      - 1514:1514/udp
+<span class=ln>56</span>      # Syslog TCP
+<span class=ln>57</span>      - 1514:1514
+<span class=ln>58</span>    restart: &#34;unless-stopped&#34;
+<span class=ln>59</span>  influxdb:
+<span class=ln>60</span>    container_name: influxdb
+<span class=ln>61</span>    image: influxdb:2.1.1
+<span class=ln>62</span>    ports:
+<span class=ln>63</span>      - &#39;8086:8086&#39;
+<span class=ln>64</span>    volumes:
+<span class=ln>65</span>      - influxdb2_data:/var/lib/influxdb2
+<span class=ln>66</span>    environment:
+<span class=ln>67</span>      # Change this to your time zone, valid time zones can be found here: https://www.joda.org/joda-time/timezones.html
+<span class=ln>68</span>      - TZ=CST6CDT
+<span class=ln>69</span>    restart: &#34;unless-stopped&#34;
+<span class=ln>70</span>  grafana:
+<span class=ln>71</span>    container_name: grafana
+<span class=ln>72</span>    image: grafana/grafana:8.3.3
+<span class=ln>73</span>    ports:
+<span class=ln>74</span>      - &#39;3000:3000&#39;
+<span class=ln>75</span>    volumes:
+<span class=ln>76</span>      - grafana_data:/var/lib/grafana
+<span class=ln>77</span>    depends_on:
+<span class=ln>78</span>      - influxdb
+<span class=ln>79</span>    environment:
+<span class=ln>80</span>      # Change this to your time zone, valid time zones can be found here: https://www.joda.org/joda-time/timezones.html
+<span class=ln>81</span>      - TZ=CST6CDT
+<span class=ln>82</span>      # Change these
+<span class=ln>83</span>      - GF_SECURITY_ADMIN_USER=opnsense
+<span class=ln>84</span>      - GF_SECURITY_ADMIN_PASSWORD=opnsense
+<span class=ln>85</span>      - GF_INSTALL_PLUGINS=grafana-worldmap-panel
+<span class=ln>86</span>    restart: &#34;unless-stopped&#34;
+<span class=ln>87</span>volumes:
+<span class=ln>88</span>  grafana_data:
+<span class=ln>89</span>  influxdb2_data:
+<span class=ln>90</span>  graylog_data:
+<span class=ln>91</span>  es_data:
+<span class=ln>92</span>  mongodb_data:
+</code></pre></div><p>Once you have your docker containers running, follow the steps below.</p>
 <h2 id=configuring-influxdb>Configuring InfluxDB</h2>
-<p>After InfluxDB is started, go to http://(ip of docker server):8086, you will need to setup your username, password, bucket and organization here. Once that is done navigate to the Data tab, click on Telegraf, and create a configuration for a system. Name it, and copy your API token, you will need this for your Telegraf configuration. You will also need to generate another API token for Grafana. Click on API tokens -> Generate API Token -> Read/Write Access -> Click on your bucket under Read -> and Save. Copy this somewhere as well, you'll need it for Grafana.</p>
+<p>After InfluxDB is started, go to http://(ip of docker server):8086, you will need to setup your username, password, bucket and organization here. Once that is done navigate to the Data tab, click on Telegraf, and create a configuration for a system. Name it, and copy your API token, you will need this for your telegraf configuration. I recommend generating another API token for Grafana. Click on API tokens -> Generate API Token -> Read/Write Access -> Click on your bucket under Read -> and Save. Copy this somewhere as well, you'll need it for Grafana.</p>
 <h2 id=configuring-telegraf>Configuring Telegraf</h2>
-<h3 id=for-previous-users>For previous users</h3>
-<p>If you previously used the pkg install version of telegraf, follow these instructions.</p>
-<p>Run <code>sudo pkg remove telegraf</code> to remove telegraf.</p>
-<p>Delete the line that starts with telegraf in /usr/local/etc/sudoers.</p>
-<p>Once those are done you can continue with the new configuration.</p>
-<h3 id=install-the-plugin-and-configure-options>Install the plugin and configure options</h3>
-<p>Install the Telegraf plugin on OPNsense, to do so, navigate to System -> Firmware -> Plugins -> Search for telegraf, and click the plus icon to install.</p>
-<p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://i.imgur.com/vowGSSx.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://i.imgur.com/vowGSSx.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://i.imgur.com/vowGSSx.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<p>Install the Telegraf plugin on OPNsense, to do so, navigate to System -> Firmware -> Plugins -> Search for telegraf, and click the plus icon to install.
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./telegraf-install.png alt="Install Telegraf" loading=lazy decoding=async width=1825 height=757>
+</picture>
+</figure>
 </p>
 <p>Navigate to Services -> Telegraf -> Input</p>
-<p>Enable Network and PF Inputs.</p>
-<p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://i.imgur.com/WskfVlS.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://i.imgur.com/WskfVlS.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://i.imgur.com/WskfVlS.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<p>Enable Network and PF Inputs.
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./inputs.png alt=Inputs loading=lazy decoding=async width=417 height=68>
+</picture>
+</figure>
 </p>
 <p>Then click Save.</p>
 <p>Now navigate to Services -> Telegraf -> Output</p>
 <p>Enable Influx v2 Output and fill in the following:</p>
-<p>Influx v2 Token: Your InfluxDB Token</p>
 <p>Influx v2 URL: Your InfluxDB URL, this will be the IP address or hostname of your system that is running InfluxDB. E.g http://192.168.1.10:8086</p>
+<p>Influx v2 Token: Your InfluxDB Token</p>
 <p>Influx v2 Organization: Your InfluxDB Organization</p>
 <p>Influx v2 Bucket: Your InfluxDB Bucket</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://i.imgur.com/VS4FKU7.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://i.imgur.com/VS4FKU7.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://i.imgur.com/VS4FKU7.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./influxdb-settings.png alt="Output Config" loading=lazy decoding=async width=776 height=199>
+</picture>
+</figure>
 </p>
 <p>Then click Save.</p>
-<h3 id=alternative-opnsense-configuration-via-ansible>Alternative OPNSense Configuration via Ansible</h3>
-<p>You can use Ansible to automate a few sections. Install <a href=https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html>Ansible</a> on your linux server and use the files at <a href=https://github.com/bsmithio/OPNsense-Dashboard/tree/master/ansible>https://github.com/bsmithio/OPNsense-Dashboard/tree/master/ansible</a>. If you use this method you can skip these sections: Add telegraf to sudoers, Telegraf Plugins, and Configuration for the Suricata dashboard.</p>
-<h3 id=add-telegraf-to-sudoers>Add telegraf to sudoers</h3>
-<p>After that, we need to add telegraf to sudoers and use nopasswd to restrict telegraf to only what it needs to run as root.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>printf &#39;telegraf ALL=(root) NOPASSWD: /usr/local/bin/telegraf_pfifgw.php\n&#39; | sudo tee -a /usr/local/etc/sudoers &gt; /dev/null
-</code></pre></div><p>You may also wish to disable sudo logging for telegraf_pfifgw.php, otherwise you'll see many sudo logs from telegraf running the script every 10 seconds.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>printf &#39;Cmnd_Alias PFIFGW = /usr/local/bin/telegraf_pfifgw.php\n&#39; | sudo tee -a /usr/local/etc/sudoers &gt; /dev/null
-<span class=ln>2</span>printf &#39;Defaults!PFIFGW !log_allowed\n&#39; | sudo tee -a /usr/local/etc/sudoers &gt; /dev/null
-</code></pre></div><p>Add the <a href=./config/custom.conf>custom.conf</a> telegraf config to /usr/local/etc/telegraf.d</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>sudo mkdir /usr/local/etc/telegraf.d
-<span class=ln>2</span>sudo chown telegraf:telegraf /usr/local/etc/telegraf.d
-<span class=ln>3</span>sudo chmod 750 /usr/local/etc/telegraf.d
-<span class=ln>4</span>sudo curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/custom.conf -o /usr/local/etc/telegraf.d/custom.conf
+<p>After that, we need to add telegraf to sudoers and use nopasswd so telegraf doesn't need a password when running telegraf_pfifgw.php with sudo.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>printf &#39;telegraf ALL=(root) NOPASSWD: /usr/local/bin/telegraf_pfifgw.php&#39; &gt;&gt; /usr/local/etc/sudoers
+</code></pre></div><p>You will need this <a href=https://github.com/bsmithio/OPNsense-Dashboard/blob/master/config/custom.conf>custom</a> telegraf config file.</p>
+<p>Download it and place it in /usr/local/etc/telegraf.d</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>cd /usr/local/etc/telegraf.d
+<span class=ln>2</span>curl https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/custom.conf -o custom.conf
 </code></pre></div><h3 id=telegraf-plugins>Telegraf Plugins</h3>
 <p><strong>Plugins must be copied to your OPNsense system</strong></p>
 <p>Place <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php>telegraf_pfifgw.php</a> and <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_temperature.sh>telegraf_temperature.sh</a> in /usr/local/bin and chmod them to 755.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>curl &#34;https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php&#34; -o /usr/local/bin/telegraf_pfifgw.php
-<span class=ln>2</span>curl &#34;https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_temperature.sh&#34; -o /usr/local/bin/telegraf_temperature.sh
-<span class=ln>3</span>chmod 755 /usr/local/bin/telegraf_temperature.sh /usr/local/bin/telegraf_pfifgw.php
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>cd /usr/local/bin
+<span class=ln>2</span>curl &#34;https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_pfifgw.php&#34; -o telegraf_pfifgw.php
+<span class=ln>3</span>curl &#34;https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/plugins/telegraf_temperature.sh&#34; -o telegraf_temperature.sh
+<span class=ln>4</span>chmod 755 telegraf_temperature.sh telegraf_pfifgw.php
 </code></pre></div><p>Test these out before starting the telegraf service by executing them</p>
-<p><code>sudo telegraf_pfifgw.php</code></p>
-<p><code>telegraf_temperature.sh</code></p>
+<p><code>sudo ./telegraf_pfifgw.php</code></p>
+<p><code>./telegraf_temperature.sh</code></p>
 <p>The temperature plugin may not work on every system, if you receive <code>sysctl: unknown oid 'hw.acpi.thermal'</code> comment out or remove that line from the plugin.</p>
-<p>After this is done, navigate to Services -> Telegraf -> General -> Enable Telegraf Agent.</p>
-<p>Lastly, check if Telegraf is running</p>
+<p>After this is done, navigate to Services -> Telegraf -> General -> Enable Telegraf Agent and click Save</p>
+<p>Lastly, check if telegraf is running</p>
 <p><code>sudo service telegraf status</code></p>
 <h2 id=configuring-graylog>Configuring Graylog</h2>
 <h3 id=add-geoip-to-graylog>Add GeoIP to Graylog</h3>
@@ -228,118 +287,65 @@ Once you have your docker containers running, follow the steps below.</p>
 <p>In a browser navigate to http://(ip of docker server):9000 and login.</p>
 <p>For Graylog, it's recommended to create an index set. To do so, navigate to System -> Indices. Create an index set with the name "OPNsense / filterlog" and set the index prefix to <code>opnsense_filterlog</code>.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/indexset.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/indexset.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/indexset.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./indexset.png alt="Graylog Index Set" loading=lazy decoding=async width=1264 height=523>
+</picture>
+</figure>
 </p>
 <p>Once that's done, download the <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/OPNsense-pack.json>content pack</a> and install it on Graylog by navigating to System -> Content Packs -> Upload, choose the pack, Upload, then Install.</p>
 <p>Now, add your index set from earlier to the "OPNsense / filterlog" stream. Navigate to Streams -> More Actions -> Edit Stream -> select your index set and save.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/streamindex.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/streamindex.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/streamindex.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./streamindex.png alt="Graylog Stream Index Set" loading=lazy decoding=async width=622 height=473>
+</picture>
+</figure>
 </p>
 <p>There's one more step we need to do here, navigate to System -> Configurations -> click on Update under Message Processors, and reorder like so:</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./processors.png alt="Graylog Message Processors" loading=lazy decoding=async width=631 height=620>
+</picture>
+</figure>
 </p>
 <p>Ensure that all of these are enabled, and click save.</p>
 <h3 id=add-graylog-server-as-syslog-target-on-opnsense>Add Graylog server as syslog target on OPNsense</h3>
 <p>Once that is all done, login to your OPNsense router and navigate to System -> Settings -> Logging / targets. Add a new target with the following options:</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsensesyslog.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsensesyslog.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsensesyslog.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
-</p>
-<p>If you are on OPNsense 22.1+ use the following options:</p>
-<p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://i.imgur.com/1oAMcde.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://i.imgur.com/1oAMcde.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://i.imgur.com/1oAMcde.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./opnsensesyslog.png alt="OPNsense Syslog Target" loading=lazy decoding=async width=937 height=563>
+</picture>
+</figure>
 </p>
 <p>Add a description if you'd like, then click save.</p>
 <h2 id=configuring-grafana>Configuring Grafana</h2>
 <h3 id=add-influxdb-and-elasticsearch-data-sources>Add InfluxDB and ElasticSearch data sources</h3>
 <p>You will need to add the data sources on Grafana. Navigate to http://(ip of docker server):3000, login and click on the cog wheel and Add a Data Source.</p>
 <p>For InfluxDB, make the following configurations</p>
-<p>Query Language: Flux</p>
-<p>URL: http://influxdb:8086</p>
-<p>Organization: Your InfluxDB Organization</p>
-<p>Token: Your Grafana InfluxDB API Token</p>
-<p>Default Bucket: Your opnsense bucket. This will be the bucket that the panel queries will use.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxdb.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxdb.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxdb.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./influxdb.png alt="Grafana InfluxDB Configuration" loading=lazy decoding=async width=716 height=975>
+</picture>
+</figure>
 </p>
 <p>For ElasticSearch, make the following configurations</p>
-<p>URL: http://elasticsearch:9200</p>
-<p>Time field name: timestamp</p>
-<p>Version: 7.10+</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/elasticsearch.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/elasticsearch.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/elasticsearch.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/./elasticsearch.png alt="Grafana ElasticSearch Configuration" loading=lazy decoding=async width=742 height=737>
+</picture>
+</figure>
 </p>
 <h3 id=import-dashboard>Import Dashboard</h3>
-<p>To import the dashboard, copy the JSON from <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/OPNsense-Grafana-Dashboard.json>OPNsense-Grafana-Dashboard.json</a> and navigate to Dashboards -> Browse -> Import and paste under Import via panel json.</p>
-<h3 id=configure-variables>Configure Variables</h3>
-<p>Dashboard Settings -> Variables -> Click on a variable to edit</p>
-<p>WAN - $WAN is the variable for our WAN interface panels. It is currently set to igb0 under Custom options. Use a comma-separated list for multiple WAN interfaces.</p>
-<p>LAN - $LAN uses a regex to remove any interfaces you don't want to be grouped as LAN. The filtering happens in the "Regex" field. I use a negative lookahead regex to match the interfaces I want excluded. It should be pretty easy to understand what you need to do here. I have excluded igb0 (WAN),igb2,igb3,ovpnc1, and wg0.</p>
-<p>iface - $iface is the interface variable for the Firewall panels, I have it set to igb0 by default. You can either remove igb0 so you can select all interfaces, or use a comma separated list of interfaces.</p>
-<p>dataSource - dataSource is the variable for our InfluxDB data source. It is the data source that will be used for all panels with InfluxDB queries. You should see a preview of values you can pick from. Under Instance name filter, use the name of the InfluxDB data source you created for OPNsense if you have multiple InfluxDB data sources.</p>
-<p>ESdataSource - ESdataSource is the variable four our Elasticsearch data source. It is the data source that will be used for all panels with Elasticsearch queries. You should see a preview of values you can pick from. Under Instance name filter, use the name of the Elastisearch data source you created for OPNsense if you have multiple Elasticsearch data sources.</p>
-<p>Lastly, I don't recommend setting the time range beyond 24 hours, due to how many data points that will return in Grafana.</p>
-<h2 id=configuration-for-the-suricata-dashboard-optional>Configuration for the Suricata dashboard #Optional</h2>
-<p>This section assumes you have already configured Suricata.</p>
-<h3 id=add-the-necessary-files>Add the necessary files</h3>
-<p>Add <a href=./config/suricata/suricata.conf>suricata.conf</a> to /usr/local/etc/telegraf.d</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>sudo curl &#39;https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/suricata/suricata.conf&#39; -o /usr/local/etc/telegraf.d/suricata.conf
-</code></pre></div><p>Add <a href=./config/suricata/custom.yaml>custom.yaml</a> to /usr/local/opnsense/service/templates/OPNsense/IDS</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>sudo curl &#39;https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/suricata/custom.yaml&#39; -o /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml
-</code></pre></div><p>Create the log file and give telegraf permissions to read it</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>sudo touch /tmp/eve.json
-<span class=ln>2</span>sudo chown :telegraf /tmp/eve.json
-<span class=ln>3</span>sudo chmod 640 /tmp/eve.json
-</code></pre></div><h3 id=restart-suricata-and-telegraf>Restart Suricata and Telegraf</h3>
-<p>Restart Suricata from Services -> Intrusion Detection -> Administration</p>
-<p>Uncheck Enabled and click Apply.</p>
-<p>Check Enabled and click Apply.</p>
-<p>Restart telegraf by running</p>
-<p><code>sudo service telegraf restart</code></p>
-<h3 id=import-the-suricata-dashboard>Import the Suricata Dashboard</h3>
-<p>To import the dashboard, copy the JSON from <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/OPNsense-Grafana-Dashboard-Suricata.json>OPNsense-Grafana-Dashboard-Suricata.json</a> and navigate to Dashboards -> Browse -> Import and paste under Import via panel json.</p>
+<p>To import the dashboard, copy the JSON in <a href=OPNsense-Grafana-Dashboard.json>OPNsense-Grafana-Dashboard.json</a> and navigate to Dashboards -> Browse -> Import and paste under Import via panel json.</p>
+<p>Dashboard Settings -> Variables</p>
+<p>WAN - $WAN is a static variable defined so that a separate dashboard panel can be created for WAN interfaces stats. Use a comma-separated list for multiple WAN interfaces.</p>
+<p>LAN - $LAN uses a regex to remove any interfaces you don't want to be grouped as LAN. The filtering happens in the "Regex" field. I use a negative lookahead regex to match the interfaces I want excluded. It should be pretty easy to understand what you need to do here. I have excluded igb0 (WAN) and igb1,igb2,igb3 (only used to host vlans)..</p>
+<p>Lastly, I don't recommend setting the time range beyond 24 hours, due to how many data points that will return in grafana.</p>
 <h2 id=troubleshooting>Troubleshooting</h2>
 <h3 id=telegraf-plugins-1>Telegraf Plugins</h3>
 <ul>
@@ -347,64 +353,41 @@ Once you have your docker containers running, follow the steps below.</p>
 <li>If you're copying from a windows system, make sure the <a href=https://www.cyberciti.biz/faq/howto-unix-linux-convert-dos-newlines-cr-lf-unix-text-format/>CRLF is correct</a></li>
 <li>The below command should display unix line endings (\n or LF) as $ and Windows line endings (\r\n or CRLF) as ^M$.</li>
 </ul>
-<p><code>cat -e /usr/local/bin/telegraf_pfifgw.php</code></p>
+<p><code># cat -e /usr/local/bin/telegraf_pfinterface.php</code></p>
 <h3 id=telegraf-troubleshooting>Telegraf Troubleshooting</h3>
-<p>If you get no good output from running the plugin directly, try the following command before moving to the step below.</p>
-<p><code>sudo su -m telegraf -c 'telegraf --test --config /usr/local/etc/telegraf.conf --config-directory /usr/local/etc/telegraf.d'</code></p>
-<p>To troubleshoot plugins further, enable Debug Log and disable Quiet Log in the Telegraf GUI then click Save. Run the above command again.</p>
-<p><code>sudo su -m telegraf -c 'telegraf --test --config /usr/local/etc/telegraf.conf --config-directory /usr/local/etc/telegraf.d'</code></p>
+<p>If you get no good output from running the plugin directly, try the following command before moving to the below step.</p>
+<p><code>telegraf --test --config /usr/local/etc/telegraf.conf</code></p>
+<p>To troubleshoot plugins further, add the following lines to the agent block in /usr/local/etc/telegraf.conf and send a HUP to the telegraf pid. You're going to need to do this from a ssh shell. Once you update the config you are going to need to tell telegraf to read the new configs. If you restart telegraf from OPNsense, this will not work since it will overwrite your changes.</p>
+<h3 id=telegraf-config-paste-in-to-agent-section>Telegraf Config (Paste in to [agent] section)</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>debug = true
+<span class=ln>2</span>quiet = false
+<span class=ln>3</span>logfile = &#34;/var/log/telegraf/telegraf.log&#34;
+</code></pre></div><h3 id=restarting-telegraf>Restarting Telegraf</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>ps aux | grep &#39;[t]elegraf.conf&#39;
+<span class=ln>2</span>kill -HUP &lt;pid of telegraf proces&gt;
+</code></pre></div><p>Now go read /var/log/telegraf/telegraf.log</p>
 <h3 id=influxdb>InfluxDB</h3>
 <p>When in doubt, run a few queries to see if the data you are looking for is being populated.
 I recommend doing this in Grafana's Explore tab.</p>
 <h3 id=view-measurements>View measurements</h3>
-<pre><code>import &quot;influxdata/influxdb/schema&quot;
-
-schema.measurements(bucket: &quot;opnsense&quot;)
-</code></pre>
-<h3 id=view-field-values>View field values</h3>
-<pre><code>from(bucket: &quot;opnsense&quot;)
-  |&gt; range(start: -24h)
-  |&gt; filter(fn: (r) =&gt; r[&quot;_measurement&quot;] == &quot;system&quot;)
-  |&gt; limit(n:10)
-</code></pre>
-<h3 id=how-to-drop-an-influxdb-v2-measurement>How to drop an InfluxDB v2 measurement</h3>
-<p>You must access your InfluxDB instance's shell to do this.</p>
-<p>To do so run</p>
-<p><code>sudo docker exec -it influxdb /bin/bash</code></p>
-<p>on your docker host.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>import &#34;influxdata/influxdb/schema&#34;
+<span class=ln>2</span>
+<span class=ln>3</span>schema.measurements(bucket: &#34;opnsense&#34;)
+</code></pre></div><h3 id=view-field-values>View field values</h3>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>from(bucket: &#34;opnsense&#34;)
+<span class=ln>2</span>  |&gt; range(start: -24h)
+<span class=ln>3</span>  |&gt; filter(fn: (r) =&gt; r[&#34;_measurement&#34;] == &#34;system&#34;)
+<span class=ln>4</span>  |&gt; limit(n:10)
+</code></pre></div><h3 id=how-to-drop-an-influxdb-v2-measurement>How to drop an InfluxDB v2 measurement</h3>
+<p>You must access your influx instance's shell to do this.
+To do so run
+<code>sudo docker exec -it influxdb /bin/bash</code>
+on your docker host.</p>
 <p>Then use the following</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>influx delete --bucket &#34;$YourBucket&#34; --predicate &#39;_measurement=&#34;$Example&#34;&#39; -o $organization --start &#34;1970-01-01T00:00:00Z&#34; --stop &#34;2050-12-31T23:59:00Z&#34; --token &#34;$YourAPIToken&#34;
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>bash-4.4# influx delete --bucket &#34;$YourBucket&#34; --predicate &#39;_measurement=&#34;$Example&#34;&#39; -o $organization --start &#34;1970-01-01T00:00:00Z&#34; --stop &#34;2050-12-31T23:59:00Z&#34; --token &#34;$YourAPIToken&#34;
 </code></pre></div><h3 id=learn-more-about-flux-queries>Learn more about Flux queries</h3>
 <p><a href=https://docs.influxdata.com/influxdb/cloud/query-data/flux/query-fields/>https://docs.influxdata.com/influxdb/cloud/query-data/flux/query-fields/</a></p>
 <p><a href=https://docs.influxdata.com/influxdb/cloud/query-data/flux/explore-schema/>https://docs.influxdata.com/influxdb/cloud/query-data/flux/explore-schema/</a></p>
-<h3 id=suricata-troubleshooting>Suricata Troubleshooting</h3>
-<p>If there is no data on the Suricata dashboard, verify if there are any alerts in /tmp/eve.json.</p>
-<p>If there is nothing in /tmp/eve.json, verify that /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml and /usr/local/etc/suricata/custom.yaml are identical to the one in this repo.</p>
-<p>If /usr/local/etc/suricata/custom.yaml is not identical, but /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml is, you will need to reload Suricata from the GUI. To do so you would uncheck Enable in the Suricata GUI, click Apply, then check Enable, and click Apply again. You will need to wait for Suricata to reload. If you have a lot of rules this can take some time.</p>
-<p>If you've verified and done all the steps above, and still see nothing, you could try using <a href=https://github.com/3CORESec/testmynids.org>tmNIDS</a> to generate alerts. You will need bash installed on your OPNsense system for this.</p>
-<p><code>sudo pkg install bash</code></p>
-<p>Once you have bash installed, you can use this one-liner to download and execute tmNIDS.</p>
-<div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>curl https://raw.githubusercontent.com/3CORESec/testmynids.org/master/tmNIDS -o /tmp/tmNIDS &amp;&amp; chmod +x /tmp/tmNIDS &amp;&amp; bash /tmp/tmNIDS
-</code></pre></div><p>You can then run the tests through the CLI.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://i.imgur.com/PhoKWxN.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://i.imgur.com/PhoKWxN.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://i.imgur.com/PhoKWxN.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
-</p>
-<h3 id=map-issues>Map Issues</h3>
-<p>If you see no GeoIP data on the map make sure you rearranged the Message Processors in System -> Configurations, and reorder like so:</p>
-<p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
-</p>
 </div>
 <div class=post_comments>
 </div>
