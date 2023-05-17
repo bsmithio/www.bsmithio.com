@@ -1,0 +1,11 @@
+--2023-05-17 05:05:45--  https://i.imgur.com/PhoKWxN.png
+Resolving i.imgur.com (i.imgur.com)... 151.101.180.193
+Connecting to i.imgur.com (i.imgur.com)|151.101.180.193|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 32706 (32K) [image/png]
+Saving to: ‘PhoKWxN.png’
+
+     0K .......... .......... .......... .                    100% 33.8M=0.001s
+
+2023-05-17 05:05:45 (33.8 MB/s) - ‘PhoKWxN.png’ saved [32706/32706]
+

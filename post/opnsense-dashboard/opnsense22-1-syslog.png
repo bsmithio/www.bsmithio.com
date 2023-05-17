@@ -1,0 +1,11 @@
+--2023-05-17 05:04:52--  https://i.imgur.com/1oAMcde.png
+Resolving i.imgur.com (i.imgur.com)... 151.101.180.193
+Connecting to i.imgur.com (i.imgur.com)|151.101.180.193|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 34317 (34K) [image/png]
+Saving to: ‘1oAMcde.png’
+
+     0K .......... .......... .......... ...                  100% 18.0M=0.002s
+
+2023-05-17 05:04:52 (18.0 MB/s) - ‘1oAMcde.png’ saved [34317/34317]
+
