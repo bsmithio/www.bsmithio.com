@@ -65,7 +65,7 @@
 <span><svg class="icon"><use xlink:href="#calendar"/></svg></span>
 <span class=post_date>
 Jan 12, 2022</span>
-<span class=post_time> · 11 min read</span><span>&nbsp;· <a href=../../tags/opnsense title=OPNsense class="post_tag button button_translucent">OPNsense
+<span class=post_time> · 9 min read</span><span>&nbsp;· <a href=../../tags/opnsense title=OPNsense class="post_tag button button_translucent">OPNsense
 </a>
 </span>
 </div>
@@ -153,24 +153,20 @@ Once you have your docker containers running, follow the steps below.</p>
 <h3 id=install-the-plugin-and-configure-options>Install the plugin and configure options</h3>
 <p>Install the Telegraf plugin on OPNsense, to do so, navigate to System -> Firmware -> Plugins -> Search for telegraf, and click the plus icon to install.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/plugin.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/plugin.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/plugin.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/plugin.png alt loading=lazy decoding=async width=1825 height=757>
+</picture>
+</figure>
 </p>
 <p>Navigate to Services -> Telegraf -> Input</p>
 <p>Enable Network and PF Inputs.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/pfinput.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/pfinput.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/pfinput.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/pfinput.png alt loading=lazy decoding=async width=417 height=68>
+</picture>
+</figure>
 </p>
 <p>Then click Save.</p>
 <p>Now navigate to Services -> Telegraf -> Output</p>
@@ -180,13 +176,11 @@ Once you have your docker containers running, follow the steps below.</p>
 <p>Influx v2 Organization: Your InfluxDB Organization</p>
 <p>Influx v2 Bucket: Your InfluxDB Bucket</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxbucket.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxbucket.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxbucket.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/influxbucket.png alt loading=lazy decoding=async width=776 height=199>
+</picture>
+</figure>
 </p>
 <p>Then click Save.</p>
 <h3 id=alternative-opnsense-configuration-via-ansible>Alternative OPNSense Configuration via Ansible</h3>
@@ -228,56 +222,46 @@ Once you have your docker containers running, follow the steps below.</p>
 <p>In a browser navigate to http://(ip of docker server):9000 and login.</p>
 <p>For Graylog, it's recommended to create an index set. To do so, navigate to System -> Indices. Create an index set with the name "OPNsense / filterlog" and set the index prefix to <code>opnsense_filterlog</code>.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/indexset.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/indexset.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/indexset.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/indexset.png alt="Graylog Index Set" loading=lazy decoding=async width=1264 height=523>
+</picture>
+</figure>
 </p>
 <p>Once that's done, download the <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/OPNsense-pack.json>content pack</a> and install it on Graylog by navigating to System -> Content Packs -> Upload, choose the pack, Upload, then Install.</p>
 <p>Now, add your index set from earlier to the "OPNsense / filterlog" stream. Navigate to Streams -> More Actions -> Edit Stream -> select your index set and save.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/streamindex.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/streamindex.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/streamindex.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/streamindex.png alt="Graylog Stream Index Set" loading=lazy decoding=async width=622 height=473>
+</picture>
+</figure>
 </p>
 <p>There's one more step we need to do here, navigate to System -> Configurations -> click on Update under Message Processors, and reorder like so:</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/processors.png alt="Graylog Message Processors" loading=lazy decoding=async width=598 height=634>
+</picture>
+</figure>
 </p>
 <p>Ensure that all of these are enabled, and click save.</p>
 <h3 id=add-graylog-server-as-syslog-target-on-opnsense>Add Graylog server as syslog target on OPNsense</h3>
 <p>Once that is all done, login to your OPNsense router and navigate to System -> Settings -> Logging / targets. Add a new target with the following options:</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsensesyslog.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsensesyslog.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsensesyslog.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/opnsensesyslog.png alt="OPNsense Syslog Target" loading=lazy decoding=async width=937 height=563>
+</picture>
+</figure>
 </p>
 <p>If you are on OPNsense 22.1+ use the following options:</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsense22-1-syslog.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsense22-1-syslog.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/opnsense22-1-syslog.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/opnsense22-1-syslog.png alt="OPNsense 22.1+ Syslog Target" loading=lazy decoding=async width=945 height=611>
+</picture>
+</figure>
 </p>
 <p>Add a description if you'd like, then click save.</p>
 <h2 id=configuring-grafana>Configuring Grafana</h2>
@@ -290,26 +274,22 @@ Once you have your docker containers running, follow the steps below.</p>
 <p>Token: Your Grafana InfluxDB API Token</p>
 <p>Default Bucket: Your opnsense bucket. This will be the bucket that the panel queries will use.</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxdb.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxdb.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/influxdb.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/influxdb.png alt="Grafana InfluxDB Configuration" loading=lazy decoding=async width=716 height=975>
+</picture>
+</figure>
 </p>
 <p>For ElasticSearch, make the following configurations</p>
 <p>URL: http://elasticsearch:9200</p>
 <p>Time field name: timestamp</p>
 <p>Version: 7.10+</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/elasticsearch.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/elasticsearch.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/elasticsearch.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/elasticsearch.png alt="Grafana ElasticSearch Configuration" loading=lazy decoding=async width=742 height=737>
+</picture>
+</figure>
 </p>
 <h3 id=import-dashboard>Import Dashboard</h3>
 <p>To import the dashboard, copy the JSON from <a href=https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/OPNsense-Grafana-Dashboard.json>OPNsense-Grafana-Dashboard.json</a> and navigate to Dashboards -> Browse -> Import and paste under Import via panel json.</p>
@@ -386,24 +366,20 @@ schema.measurements(bucket: &quot;opnsense&quot;)
 <p>Once you have bash installed, you can use this one-liner to download and execute tmNIDS.</p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=ln>1</span>curl https://raw.githubusercontent.com/3CORESec/testmynids.org/master/tmNIDS -o /tmp/tmNIDS &amp;&amp; chmod +x /tmp/tmNIDS &amp;&amp; bash /tmp/tmNIDS
 </code></pre></div><p>You can then run the tests through the CLI.
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/tmnids.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/tmnids.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/tmnids.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/tmnids.png alt loading=lazy decoding=async width=1013 height=506>
+</picture>
+</figure>
 </p>
 <h3 id=map-issues>Map Issues</h3>
 <p>If you see no GeoIP data on the map make sure you rearranged the Message Processors in System -> Configurations, and reorder like so:</p>
 <p>
-<div class="notices warning image-warning">
-<div class=label>Image not found</div>
-<style>a.warning-link{color:inherit!important;font-weight:inherit!important;text-decoration:underline!important;border-bottom:none!important}</style>
-<p>Web path: <a href=../../post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png title="Open this web path in a new tab" target=_blank class=warning-link>/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png</a></p>
-<p>Disk path: /content/post/opnsense-dashboard/https://www.bsmithio.com/post/opnsense-dashboard/processors.png</p>
-<p>Using <a href=https://gohugo.io/content-management/page-bundles/ title="Information about Hugo Page Bundles" target=_blank class=warning-link>Page Bundles</a>: true</p>
-</div>
+<figure>
+<picture>
+<img class="image_figure image_internal" src=../../post/opnsense-dashboard/processors.png alt="Graylog Message Processors" loading=lazy decoding=async width=598 height=634>
+</picture>
+</figure>
 </p>
 </div>
 <div class=post_comments>
